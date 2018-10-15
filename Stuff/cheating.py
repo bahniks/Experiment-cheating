@@ -10,6 +10,8 @@ from common import ExperimentFrame, InstructionsFrame
 from gui import GUI
 
 
+################################################################################
+# TEXTS
 treatmenttext = '''{}. kolo
 
 Rozhodněte se, zda v tomto kole na kostce padne lichý či sudý počet bodů.
@@ -27,9 +29,24 @@ Rozhodněte se, zda v tomto kole na kostce padne lichý či sudý počet bodů.
 """
 
 controltext2 = "V tomto kole jste {}"
-win = "vyhráli 50,- Kč."
-loss = "nevyhráli nic."
+wintext = "vyhráli 50,- Kč."
+losstext = "nevyhráli nic."
 
+choicetext = """Jak jste si všimli, tento experimentální úkol nabýval dvou podob:
+
+Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
+Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
+
+Nyní proběhne posledních 10 kol úkolu. Můžete si sami vybrat, zda je chcete řešit v podobě 1. nebo v podobě 2.
+"""
+
+continuetext = "Pokračovat"
+oddtext = "Liché"
+eventext = "Sudé"
+rolltext = "Hodit kostkou"
+correcttext = "Uhodl(a)"
+incorrecttext = "Neuhodl(a)"
+           
 
 intro_block_1 = """
 Intro1
@@ -42,6 +59,8 @@ Intro2
 intro_block_3 = """
 Intro3
 """
+################################################################################
+
 
 conditions = ["treatment", "control"]
 random.shuffle(conditions)
@@ -65,7 +84,8 @@ class Cheating(ExperimentFrame):
         #######################
         # adjustable parameters
         self.trials = 10
-        self.pause = 1
+        self.pause_after_roll = 0.5
+        self.pause_before_trial = 0.2
         self.displayNum = self.createDots # self.createDots or self.createText
         self.diesize = 240
         #######################
@@ -95,13 +115,13 @@ class Cheating(ExperimentFrame):
 
         self["highlightbackground"] = "white"
         self.columnconfigure(1, weight = 1)
-        self.rowconfigure(0, weight = 2)
+        self.rowconfigure(0, weight = 3)
         self.rowconfigure(1, weight = 1)
         self.rowconfigure(2, weight = 1)
-        self.rowconfigure(3, weight = 2)
+        self.rowconfigure(3, weight = 1)
         self.rowconfigure(4, weight = 1)
         self.rowconfigure(5, weight = 1)
-        self.rowconfigure(6, weight = 1)
+        self.rowconfigure(6, weight = 4)
 
         self.currentTrial = 0
 
@@ -135,14 +155,14 @@ class Cheating(ExperimentFrame):
         self.upperText["state"] = "normal"
         if self.condition == "treatment":
             self.upperText.insert("1.0", treatmenttext.format(self.currentTrial))
-            self.rollButton = ttk.Button(self.upperButtonFrame, text = "Hodit kostkou",
+            self.rollButton = ttk.Button(self.upperButtonFrame, text = rolltext,
                                          command = self.roll)
             self.rollButton.grid(row = 0, column = 1)
         elif self.condition == "control":
             self.upperText.insert("1.0", controltext.format(self.currentTrial))
-            self.evenButton = ttk.Button(self.upperButtonFrame, text = "Sudé",
+            self.evenButton = ttk.Button(self.upperButtonFrame, text = eventext,
                                          command = lambda: self.roll("even"))
-            self.oddButton = ttk.Button(self.upperButtonFrame, text = "Liché",
+            self.oddButton = ttk.Button(self.upperButtonFrame, text = oddtext,
                                         command = lambda: self.roll("odd"))
             self.evenButton.grid(row = 0, column = 0, padx = 30)
             self.oddButton.grid(row = 0, column = 2, padx = 30)
@@ -153,32 +173,37 @@ class Cheating(ExperimentFrame):
         self.bottomText["state"] = "normal"
         if self.condition == "treatment":
             self.bottomText.insert("1.0", treatmenttext2)
-            self.winButton = ttk.Button(self.bottomButtonFrame, text = "Uhodl(a)",
+            self.winButton = ttk.Button(self.bottomButtonFrame, text = correcttext,
                                          command = lambda: self.answer("win"))
-            self.lossButton = ttk.Button(self.bottomButtonFrame, text = "Neuhodl(a)",
+            self.lossButton = ttk.Button(self.bottomButtonFrame, text = incorrecttext,
                                         command = lambda: self.answer("loss"))
             self.winButton.grid(row = 0, column = 0, padx = 30)
             self.lossButton.grid(row = 0, column = 2, padx = 30)
         elif self.condition == "control":
-            text = win if self.response == "odd" and self.currentRoll in (1,3,5) else loss
+            text = wintext if (self.response == "odd" and self.currentRoll in (1,3,5)) or (
+                self.response == "even" and self.currentRoll in (2,4,6)) else losstext
             self.bottomText.insert("1.0", controltext2.format(text))
-            self.continueButton = ttk.Button(self.bottomButtonFrame, text = "Pokračovat",
+            self.continueButton = ttk.Button(self.bottomButtonFrame, text = continuetext,
                                              command = self.answer)
             self.continueButton.grid(row = 0, column = 1)
         self.bottomText["state"] = "disabled"
-            
 
-    def roll(self, response = None):
+
+    def roll(self, response = "NA"):
+        self.firstResponse = perf_counter()
         if self.condition == "treatment":
             self.rollButton["state"] = "disabled"
         else:
             self.evenButton["state"] = "disabled"
             self.oddButton["state"] = "disabled"
         self.currentRoll = random.randint(1, 6)
-        self.die.create_rectangle((2, 2, self.diesize - 2, self.diesize - 2),
+        self.die.create_rectangle((5, 5, self.diesize - 5, self.diesize - 5),
                                   fill = "white", tag = "die", outline = "black", width = 5)
         self.displayNum(self.diesize/2, self.diesize/2, self.currentRoll)
         self.response = response
+        self.update()
+        sleep(self.pause_after_roll)
+        self.beforeSecondResponse = perf_counter()
         self.bottomPart()
 
 
@@ -200,10 +225,11 @@ class Cheating(ExperimentFrame):
         self.die.create_text(x0, y0, text = str(num), font = "helvetica 70", tag = "die")
 
 
-    def answer(self, answer = None):
-        #self.responses.append([self.currentTrial, self.phase, response, self.angle, self.angleDist,
-        #                       correct, t - self.time] + self.diceAngles + self.numbers +
-        #                      self.colors + [self.root.charity, self.root.reward, forCharity])
+    def answer(self, answer = "NA"):
+        t = perf_counter()
+        self.responses.append([self.currentTrial, self.condition, self.currentRoll, self.response,
+                               answer, t - self.time, self.firstResponse - self.time,
+                               t - self.beforeSecondResponse])
         self.bottomText["state"] = "normal"
         self.upperText["state"] = "normal"
         self.die.delete("die")
@@ -215,6 +241,7 @@ class Cheating(ExperimentFrame):
             child.grid_remove()
         self._createFiller()
         self.update()
+        sleep(self.pause_before_trial)
         self.run()
         
                    
