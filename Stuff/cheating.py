@@ -37,8 +37,16 @@ choicetext = """Jak jste si všimli, tento experimentální úkol nabýval dvou 
 Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
 Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
 
-Nyní proběhne posledních 10 kol úkolu. Můžete si sami vybrat, zda je chcete řešit v podobě 1. nebo v podobě 2.
+Nyní proběhne posledních 10 kol úkolu. Můžete si sami vybrat, zda je chcete řešit v:
+- 1. podobě  
+- 2. podobě
+- necháte rozhodnout náhodu, tj. s poloviční pravděpodobností budete přiřazeni do 1. podoby úkolu s poloviční pravděpodobností do 2. podoby úkolu.
 """
+
+controlchoicetext = "1. podoba"
+treatmentchoicetext = "2. podoba"
+randomchoicetext = "Rozhodne náhoda"
+
 
 continuetext = "Pokračovat"
 oddtext = "Liché"
@@ -62,35 +70,23 @@ Intro3
 ################################################################################
 
 
-conditions = ["treatment", "control"]
-random.shuffle(conditions)
-if random.random() < 0.5:
-    if random.random() < 0.5:
-        conditions.append("treatment")
-    else:
-        conditions.append("control")
-else:
-    conditions.append("choice")
-
-Instructions1 = (InstructionsFrame, {"text": intro_block_1, "height": 5})
-Instructions2 = (InstructionsFrame, {"text": intro_block_2, "height": 5})
-Instructions3 = (InstructionsFrame, {"text": intro_block_3, "height": 5})
-
-
 class Cheating(ExperimentFrame):
-    def __init__(self, root, condition, block):
+    def __init__(self, root, block):
         super().__init__(root)
 
         #######################
         # adjustable parameters
-        self.trials = 10
+        self.trials = 2
         self.pause_after_roll = 0.5
         self.pause_before_trial = 0.2
         self.displayNum = self.createDots # self.createDots or self.createText
+        self.fakeRolling = True
         self.diesize = 240
         #######################
 
-        self.condition = condition
+        global conditions
+        self.condition = conditions[block - 1]
+        self.blockNumber = block
 
         self.width = self.root.screenwidth
         self.height = self.root.screenheight
@@ -153,12 +149,12 @@ class Cheating(ExperimentFrame):
 
     def upperPart(self):
         self.upperText["state"] = "normal"
-        if self.condition == "treatment":
+        if "treatment" in self.condition:
             self.upperText.insert("1.0", treatmenttext.format(self.currentTrial))
             self.rollButton = ttk.Button(self.upperButtonFrame, text = rolltext,
                                          command = self.roll)
             self.rollButton.grid(row = 0, column = 1)
-        elif self.condition == "control":
+        elif "control" in self.condition:
             self.upperText.insert("1.0", controltext.format(self.currentTrial))
             self.evenButton = ttk.Button(self.upperButtonFrame, text = eventext,
                                          command = lambda: self.roll("even"))
@@ -171,7 +167,7 @@ class Cheating(ExperimentFrame):
 
     def bottomPart(self):
         self.bottomText["state"] = "normal"
-        if self.condition == "treatment":
+        if "treatment" in self.condition:
             self.bottomText.insert("1.0", treatmenttext2)
             self.winButton = ttk.Button(self.bottomButtonFrame, text = correcttext,
                                          command = lambda: self.answer("win"))
@@ -179,7 +175,7 @@ class Cheating(ExperimentFrame):
                                         command = lambda: self.answer("loss"))
             self.winButton.grid(row = 0, column = 0, padx = 30)
             self.lossButton.grid(row = 0, column = 2, padx = 30)
-        elif self.condition == "control":
+        elif "control" in self.condition:
             text = wintext if (self.response == "odd" and self.currentRoll in (1,3,5)) or (
                 self.response == "even" and self.currentRoll in (2,4,6)) else losstext
             self.bottomText.insert("1.0", controltext2.format(text))
@@ -191,14 +187,21 @@ class Cheating(ExperimentFrame):
 
     def roll(self, response = "NA"):
         self.firstResponse = perf_counter()
-        if self.condition == "treatment":
+        if "treatment" in self.condition:
             self.rollButton["state"] = "disabled"
         else:
             self.evenButton["state"] = "disabled"
             self.oddButton["state"] = "disabled"
-        self.currentRoll = random.randint(1, 6)
         self.die.create_rectangle((5, 5, self.diesize - 5, self.diesize - 5),
                                   fill = "white", tag = "die", outline = "black", width = 5)
+        # fake rolling
+        if self.fakeRolling:
+            for roll in range(random.randint(4,6)):         
+                self.displayNum(self.diesize/2, self.diesize/2, random.randint(1, 6))
+                self.update()
+                sleep(0.2)
+                self.die.delete("dots")
+        self.currentRoll = random.randint(1, 6)
         self.displayNum(self.diesize/2, self.diesize/2, self.currentRoll)
         self.response = response
         self.update()
@@ -218,7 +221,7 @@ class Cheating(ExperimentFrame):
             d = self.diesize/4
             coords = [x0 + x*d + d/3, y0 - y*d + d/3,
                       x0 + x*d - d/3, y0 - y*d - d/3]
-            self.die.create_oval(tuple(coords), fill = "black", tag = "die")
+            self.die.create_oval(tuple(coords), fill = "black", tag = "dots")
 
 
     def createText(self, x0, y0, num):
@@ -227,12 +230,14 @@ class Cheating(ExperimentFrame):
 
     def answer(self, answer = "NA"):
         t = perf_counter()
-        self.responses.append([self.currentTrial, self.condition, self.currentRoll, self.response,
+        self.responses.append([self.blockNumber, self.currentTrial, self.condition,
+                               self.currentRoll, self.response,
                                answer, t - self.time, self.firstResponse - self.time,
                                t - self.beforeSecondResponse])
         self.bottomText["state"] = "normal"
         self.upperText["state"] = "normal"
         self.die.delete("die")
+        self.die.delete("dots")
         self.upperText.delete("1.0", "end")
         self.bottomText.delete("1.0", "end")
         for child in self.upperButtonFrame.winfo_children():
@@ -252,19 +257,63 @@ class Cheating(ExperimentFrame):
 
 
 
+class Selection(InstructionsFrame):
+    def __init__(self, root):
+        super().__init__(root, text = choicetext, proceed = False)
 
-BlockOne = (Cheating, {"condition": conditions[0], "block": 1})
-BlockTwo = (Cheating, {"condition": conditions[1], "block": 2})
-BlockThree = (Cheating, {"condition": conditions[2], "block": 3})
+        ttk.Style().configure("TButton", font = "helvetica 15", width = 16)
+
+        self.control = ttk.Button(self, text = controlchoicetext,
+                                  command = lambda: self.response("control"))
+        self.treatment = ttk.Button(self, text = treatmentchoicetext,
+                                    command = lambda: self.response("treatment"))
+        self.random = ttk.Button(self, text = randomchoicetext,
+                                 command = lambda: self.response("random"))
+        self.control.grid(row = 2, column = 0)
+        self.random.grid(row = 2, column = 1)
+        self.treatment.grid(row = 2, column = 2)        
+
+    def response(self, choice):
+        global conditions
+        conditions[2] += "_" + choice
+        if choice == "random":
+            if random.random() < 0.5:
+                conditions[2] += "_" + "treatment"
+            else:
+                conditions[2] += "_" + "control"
+        self.nextFun()
+            
+
+        
+conditions = ["treatment", "control"]
+random.shuffle(conditions)
+if random.random() < 0.5:
+    if random.random() < 0.5:
+        conditions.append("treatment")
+    else:
+        conditions.append("control")
+else:
+    conditions.append("choice")
+
+Instructions1 = (InstructionsFrame, {"text": intro_block_1, "height": 5})
+Instructions2 = (InstructionsFrame, {"text": intro_block_2, "height": 5})
+if conditions[2] == "choice":
+    Instructions3 = Selection
+else:
+    Instructions3 = (InstructionsFrame, {"text": intro_block_3, "height": 5})
+
+BlockOne = (Cheating, {"block": 1})
+BlockTwo = (Cheating, {"block": 2})
+BlockThree = (Cheating, {"block": 3})
+
 
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([#Instructions1,
+    GUI([Instructions1,
          BlockOne,
          Instructions2,
          BlockTwo,
          Instructions3,
          BlockThree
          ])
-

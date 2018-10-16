@@ -20,15 +20,11 @@ QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 5})
 
 
 
-
-
 class Quest(ExperimentFrame):
-    def __init__(self, root, perpage, file, name, answers = None, likert = True):
+    def __init__(self, root, perpage, file, name):
         super().__init__(root)
 
         self.perpage = perpage
-        self.answers = answers
-        self.likert = likert
 
         self.file.write("{}\n".format(name))
 
@@ -43,7 +39,7 @@ class Quest(ExperimentFrame):
         self.next.grid(row = self.perpage*2 + 2, column = 1)
 
         self.rowconfigure(0, weight = 1)
-        self.rowconfigure(self.perpage*2 + 2, weight = 1)
+        self.rowconfigure(self.perpage*2 + 3, weight = 2)
         self.columnconfigure(0, weight = 1)
         self.columnconfigure(2, weight = 1)
 
@@ -55,8 +51,7 @@ class Quest(ExperimentFrame):
     def createQuestions(self):
         self.measures = []
         for i in range(self.perpage):
-            m = Measure(self, self.questions[self.mnumber], values = self.answers,
-                        shortText = str(self.mnumber + 1), likert = self.likert)
+            m = Measure(self, self.questions[self.mnumber], shortText = str(self.mnumber + 1))
             m.grid(column = 0, columnspan = 3, row = i*2 + 1)
             self.rowconfigure(i*2 + 2, weight = 1)
             self.mnumber += 1
@@ -86,7 +81,7 @@ class Quest(ExperimentFrame):
 
 
 class Measure(Canvas):
-    def __init__(self, root, text, values = None, shortText = "", likert = True):
+    def __init__(self, root, text, shortText = ""):
         super().__init__(root)
 
         self.root = root
@@ -102,20 +97,16 @@ class Measure(Canvas):
                                   anchor = "center", font = "helvetica 14")
         self.question.grid(column = 0, row = 0, columnspan = 7, sticky = S)
 
-        if likert:
-            self.left = ttk.Label(self, text = "zcela nesouhlasím", background = "white",
-                                  font = "helvetica 13")
-            self.right = ttk.Label(self, text = "zcela souhlasím", background = "white",
-                                   font = "helvetica 13")
-            self.left.grid(column = 0, row = 1, sticky = E, padx = 5)
-            self.right.grid(column = 6, row = 1, sticky = W, padx = 5)
+        self.left = ttk.Label(self, text = "zcela nesouhlasím", background = "white",
+                              font = "helvetica 13")
+        self.right = ttk.Label(self, text = "zcela souhlasím", background = "white",
+                               font = "helvetica 13")
+        self.left.grid(column = 0, row = 1, sticky = E, padx = 5)
+        self.right.grid(column = 6, row = 1, sticky = W, padx = 5)           
 
-        if not values:
-            values = range(1,6)            
-
-        for n, value in enumerate(values, 1):
-            ttk.Radiobutton(self, text = str(value), value = n, variable = self.answer, 
-                            command = self.check).grid(row = 1, column = n, padx = 4)
+        for value in range(1, 6):
+            ttk.Radiobutton(self, text = str(value), value = value, variable = self.answer,
+                            command = self.check).grid(row = 1, column = value, padx = 4)
 
         self.columnconfigure(0, weight = 1)
         self.columnconfigure(6, weight = 1)
@@ -133,24 +124,19 @@ class Measure(Canvas):
 
 
 
-class MFQ1(Quest):
+class Prosociality(Quest):
     def __init__(self, root):
-        answers = ["zcela nepodstatné", "nepříliš podstatné", "mírně podstatné", "celkem podstatné",
-                   "velmi podstatné", "obzvlášť podstatné"]
-        super().__init__(root, 8, "mfq1.txt", "MFQ importance", answers = answers)
+        super().__init__(root, 8, "prosociality.txt", "Prosociality")
 
 
-class MFQ2(Quest):
+class Hexaco(Quest):
     def __init__(self, root):
-        answers = ["zcela nesouhlasím", "docela nesouhlasím", "trochu nesouhlasím", "trochu souhlasím",
-                   "docela souhlasím", "silně souhlasím"]
-        super().__init__(root, 8, "mfq2.txt", "MFQ attitudes", answers = answers,
-                         likert = False)
+        super().__init__(root, 10, "hexaco.txt", "Hexaco")
         
 
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([#QuestInstructions,         
-         MFQ1,
-         MFQ2])
+    GUI([QuestInstructions,         
+         Hexaco,
+         Prosociality])

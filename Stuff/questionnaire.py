@@ -10,7 +10,7 @@ from common import ExperimentFrame, InstructionsFrame, Question, Measure, read_a
 from gui import GUI
 
 
-class MFQ(ExperimentFrame):
+class Questionnaire(ExperimentFrame):
     def __init__(self, root, words, question = "", labels = None, blocksize = 4, values = 7, text = True,
                  filetext = "", fontsize = 13):
         super().__init__(root)
@@ -100,26 +100,17 @@ class MFQ(ExperimentFrame):
 
 
 
-MFQ1 = (MFQ, {"words": "mfq1.txt",
-              "question": ("Když se rozhodujete, jestli je něco správné nebo špatné, do jaké míry berete " 
-                           "při svém uvažování ohled na následující kritéria?" 
-                           "\nOhodnoťte prosím každé tvrzení pomocí této škály:"),
-              "labels": ["zcela\nnepodstatné", "nepříliš\npodstatné", "mírně\npodstatné", "celkem\npodstatné",
-                         "velmi\npodstatné", "obzvlášť\npodstatné"],
-              "values": 6,
-              "text": False,
-              "fontsize": 12,
-              "filetext": "MFQ importance"})
-MFQ2 = (MFQ, {"words": "mfq2.txt",
-              "question": "Přečtěte si prosím následující věty a označte svůj souhlas nebo nesouhlas:",
-              "labels": ["zcela\nnesouhlasím", "docela\nnesouhlasím", "trochu\nnesouhlasím", "trochu\nsouhlasím",
-                   "docela\nsouhlasím", "silně\nsouhlasím"],
-              "values": 6,
-              "text": False,
-              "fontsize": 10,
-              "filetext": "MFQ attitude"})
+Work = (Questionnaire,
+        {"words": "work.txt",
+         "question": ("How comfortable would feel about engaging in the following behaviors at work?"),
+         "labels": ["Very\nuncomfortable", "", "", "","", "", "Very\ncomfortable"],
+         "values": 7,
+         "text": False,
+         "fontsize": 12,
+         "blocksize": 5,
+         "filetext": "MFQ importance"})
+
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([MFQ1,
-         MFQ2])
+    GUI([Work])
