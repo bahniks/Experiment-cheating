@@ -10,30 +10,29 @@ from gui import GUI
 
 from questionnaire import Work
 from quest import QuestInstructions, Hexaco, Prosociality
-from intros import ending, Intro, Debriefing
+from intros import ending, Intro
 from comments import Comments
 from demo import Demographics
 from cheating import Instructions1, BlockOne, Instructions2, BlockTwo, Instructions3, BlockThree
+from cheating import EndCheating, DebriefCheating
+from debriefing import Debriefing
 
 
-frames = [#Intro,
+frames = [Intro,
           Instructions1,
           BlockOne,
           Instructions2,
           BlockTwo,
           Instructions3,
           BlockThree,
+          EndCheating,
+          DebriefCheating,
           QuestInstructions,
           Hexaco,
           Prosociality,
           Work,
-          Demographics
-
-          #ChoiceBlindnessInstructions3, # debriefing for choice blindness
-          #DebriefingOne,
-          #DebriefingTwo,
-          #Comments,
-          #Debriefing,
+          Demographics,
+          Debriefing
           #ending
          ]
 

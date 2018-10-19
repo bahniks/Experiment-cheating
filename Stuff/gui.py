@@ -41,6 +41,8 @@ class GUI(Tk):
                                     
         self.count = -1
 
+        self.texts = {}
+
         self.columnconfigure(0, weight = 1)
         self.rowconfigure(0, weight = 1)
                       

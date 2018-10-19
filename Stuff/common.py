@@ -38,8 +38,14 @@ class ExperimentFrame(Canvas):
 
 class InstructionsFrame(ExperimentFrame):
     def __init__(self, root, text, proceed = True, firstLine = None, end = False, height = 12,
-                 font = 18, space = False, width = 90, keys = None):
+                 font = 18, space = False, width = 90, keys = None, update = None):
         super().__init__(root)
+
+        if update:
+            updateTexts = []
+            for i in update:
+                updateTexts.append(self.root.texts[i])
+            text = text.format(*updateTexts)
         
         self.root = root
         self.t0 = time()
@@ -213,7 +219,7 @@ class Measure(Canvas):
 
         if text:        
             if questionPosition == "next":
-                self.question = ttk.Label(self, texte = text, background = "white", anchor = "e",
+                self.question = ttk.Label(self, text = text, background = "white", anchor = "e",
                                           width = len(text) + 15, font = "helvetica 14")
                 self.question.grid(column = 0, row = 2, sticky = E, padx = 5)
             elif questionPosition == "above":

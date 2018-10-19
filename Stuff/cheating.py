@@ -6,22 +6,34 @@ from time import perf_counter, sleep
 import random
 import os
 
-from common import ExperimentFrame, InstructionsFrame
+from common import ExperimentFrame, InstructionsFrame, Measure
 from gui import GUI
 
 
 ################################################################################
 # TEXTS
+
+CURRENCY = "Kč"
+WIN = 50
+
+
+continuetext = "Pokračovat"
+oddtext = "Liché"
+eventext = "Sudé"
+rolltext = "Hodit kostkou"
+correcttext = "Uhodl(a)"
+incorrecttext = "Neuhodl(a)"    
+
 treatmenttext = '''{}. kolo
 
 Rozhodněte se, zda v tomto kole na kostce padne lichý či sudý počet bodů.
 
 Svoji volbu si zapamatujte.
 
-Zmáčkněte tlačítko "Hodit kostkou".
-'''
+Zmáčkněte tlačítko "{}".
+'''.format("{}", rolltext)
 
-treatmenttext2 = "Stanovte, zda jste uhodli a vyhráli 50,- Kč nebo neuhodli a nevyhráli nic."
+treatmenttext2 = "Stanovte, zda jste uhodli a vyhráli {} {} nebo neuhodli a nevyhráli nic.".format(WIN, CURRENCY)
 
 controltext = """{}. kolo
 
@@ -29,7 +41,7 @@ Rozhodněte se, zda v tomto kole na kostce padne lichý či sudý počet bodů.
 """
 
 controltext2 = "V tomto kole jste {}"
-wintext = "vyhráli 50,- Kč."
+wintext = "vyhráli {} {}.".format(WIN, CURRENCY)
 losstext = "nevyhráli nic."
 
 choicetext = """Jak jste si všimli, tento experimentální úkol nabýval dvou podob:
@@ -45,28 +57,53 @@ Nyní proběhne posledních 10 kol úkolu. Můžete si sami vybrat, zda je chcet
 
 controlchoicetext = "1. podoba"
 treatmentchoicetext = "2. podoba"
-randomchoicetext = "Rozhodne náhoda"
-
-
-continuetext = "Pokračovat"
-oddtext = "Liché"
-eventext = "Sudé"
-rolltext = "Hodit kostkou"
-correcttext = "Uhodl(a)"
-incorrecttext = "Neuhodl(a)"
-           
+randomchoicetext = "Rozhodne náhoda"   
 
 intro_block_1 = """
-Intro1
-"""
+V tomto úkolu budete předpovídat, zda při virtuálním hodu kostkou nakonec padne lichý či sudý počet bodů. Virtuální kostka je generátor náhodných čísel, který se náhodě zastaví a ukáže 1, 2, 3, 4, 5 nebo 6 bodů. Liché hody jsou 1, 3 a 5. Sudé hody jsou 2, 4 a 6.
+
+Nejprve se uskuteční 10 kol, poté nastane pauza, nato se uskuteční dalších 10 kol, nastane opět pauza a poté se uskuteční posledních 10 kol (celkem tedy budete předpovídat 30 kol hodů kostkou). 
+
+Za každou správnou předpověď, zda padne sudý či lichý počet bodů, získáte na konci experimentu {} {}. Kdybyste uhodli všechny hody získáte tedy {} {}, když neuhodnete žádný, nezískáte v tomto úkolu nic.
+""".format(WIN, CURRENCY, WIN*30, CURRENCY)
 
 intro_block_2 = """
-Intro2
-"""
+Tímto skončilo prvních 10 kol. Bude-li tento blok kol vylosován, získáte odměnu {} {}. Nyní proběhne druhých 10 kol.
+""".format("{}", CURRENCY)
 
 intro_block_3 = """
 Intro3
 """
+
+endtext = """
+Tímto část experimentu s hádáním bodů na kostce končí.
+Náhodně byl vybrán k vyplacení blok {}.
+Vydělali jste si tedy {} {}.
+"""
+
+debrieftext = """
+Jak již bylo zmíněno, experimentální úkol nabýval dvou podob:
+
+Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
+
+Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
+
+Please rate how much do you agree for each versions of the task that with several characterizations.
+"""
+
+debriefquest1 = "How much do you agree for the first version that ..."
+debriefquest2 = "How much do you agree for the second version that ..."
+debriefscale1 = "completely disagree"
+debriefscale2 = "disagree"
+debriefscale3 = "agree"
+debriefscale4 = "compeletely agree"
+
+debriefdimensions = ["... it required attention",
+                     "... it required logical thinking",
+                     "... it was possible to behave immorally in it",
+                     "... it was acceptable to behave immorally in it"]
+
+
 ################################################################################
 
 
@@ -123,6 +160,9 @@ class Cheating(ExperimentFrame):
 
         ttk.Style().configure("TButton", font = "helvetica 15")
 
+        if block == 1:
+            self.root.wins = [0, 0, 0]            
+
         self.responses = []
 
 
@@ -133,6 +173,8 @@ class Cheating(ExperimentFrame):
             self.currentTrial += 1
             self.startTrial()
         else:
+            if self.blockNumber == 1:
+                self.root.texts["win1"] = self.root.wins[self.blockNumber - 1] * WIN
             self.nextFun()
 
 
@@ -176,8 +218,11 @@ class Cheating(ExperimentFrame):
             self.winButton.grid(row = 0, column = 0, padx = 30)
             self.lossButton.grid(row = 0, column = 2, padx = 30)
         elif "control" in self.condition:
-            text = wintext if (self.response == "odd" and self.currentRoll in (1,3,5)) or (
-                self.response == "even" and self.currentRoll in (2,4,6)) else losstext
+            win = (self.response == "odd" and self.currentRoll in (1,3,5)) or (
+                self.response == "even" and self.currentRoll in (2,4,6))
+            if win:
+                self.root.wins[self.blockNumber - 1] += 1
+            text = wintext if win else losstext
             self.bottomText.insert("1.0", controltext2.format(text))
             self.continueButton = ttk.Button(self.bottomButtonFrame, text = continuetext,
                                              command = self.answer)
@@ -230,6 +275,8 @@ class Cheating(ExperimentFrame):
 
     def answer(self, answer = "NA"):
         t = perf_counter()
+        if answer == "win":
+                self.root.wins[self.blockNumber - 1] += 1
         self.responses.append([self.blockNumber, self.currentTrial, self.condition,
                                self.currentRoll, self.response,
                                answer, t - self.time, self.firstResponse - self.time,
@@ -282,6 +329,90 @@ class Selection(InstructionsFrame):
             else:
                 conditions[2] += "_" + "control"
         self.nextFun()
+
+
+
+class EndCheating(InstructionsFrame):
+    def __init__(self, root):
+        block = random.randint(1, 3)
+        text = endtext.format(block, root.wins[block-1] * WIN, CURRENCY)
+        super().__init__(root, text = text, width = 60)
+
+
+        
+class DebriefCheating(ExperimentFrame):
+    def __init__(self, root):
+        super().__init__(root)
+
+        self.text = Text(self, height = 10, width = 90, relief = "flat", font = "helvetica 15")
+        self.text.insert("1.0", debrieftext)
+        self.text["state"] = "disabled"
+        self.text.grid(row = 1, column = 1)
+
+        self.frame1 = OneFrame(self, debriefquest1)
+        self.frame1.grid(row = 2, column = 1)
+
+        self.frame2 = OneFrame(self, debriefquest2)
+        self.frame2.grid(row = 3, column = 1)            
+
+        ttk.Style().configure("TButton", font = "helvetica 15")
+        self.next = ttk.Button(self, text = continuetext, command = self.nextFun,
+                               state = "disabled")
+        self.next.grid(row = 4, column = 1, sticky = N)
+
+        self.rowconfigure(0, weight = 1)
+        self.rowconfigure(1, weight = 1)
+        self.rowconfigure(2, weight = 1)
+        self.rowconfigure(3, weight = 1)
+        self.rowconfigure(4, weight = 2)
+        self.columnconfigure(0, weight = 1)
+        self.columnconfigure(2, weight = 1)
+
+    def check(self):
+        if self.frame1.check() and self.frame2.check():
+            self.next["state"] = "!disabled"
+            return True
+
+    def write(self):
+        if self.check():
+            self.file.write("Perception cheating\n" + self.id + "\t")
+            self.frame1.write()
+            self.file.write("\t")
+            self.frame2.write()
+            self.file.write("\n")
+
+
+
+class OneFrame(Canvas):
+    def __init__(self, root, question):
+        super().__init__(root, background = "white", highlightbackground = "white",
+                         highlightcolor = "white")
+
+        self.root = root
+        self.file = self.root.file
+
+        self.answers = [debriefscale1, debriefscale2, debriefscale3, debriefscale4]
+        
+        self.lab1 = ttk.Label(self, text = question, font = "helvetica 15", background = "white")
+        self.lab1.grid(row = 2, column = 1, pady = 10)
+        self.measures = []
+        for count, word in enumerate(debriefdimensions):
+            self.measures.append(Measure(self, word, self.answers, "", "", function = self.root.check,
+                                         labelPosition = "none"))
+            self.measures[count].grid(row = count + 3, column = 1, columnspan = 2, sticky = E)
+
+    def check(self):
+        for measure in self.measures:
+            if not measure.answer.get():
+                return False
+        else:
+            return True             
+
+    def write(self):
+        for measure in self.measures:
+            self.file.write(str(self.answers.index(measure.answer.get()) + 1))
+            self.file.write("\t")
+     
             
 
         
@@ -295,8 +426,8 @@ if random.random() < 0.5:
 else:
     conditions.append("choice")
 
-Instructions1 = (InstructionsFrame, {"text": intro_block_1, "height": 5})
-Instructions2 = (InstructionsFrame, {"text": intro_block_2, "height": 5})
+Instructions1 = (InstructionsFrame, {"text": intro_block_1, "height": 12})
+Instructions2 = (InstructionsFrame, {"text": intro_block_2, "height": 5, "update": ["win1"]})
 if conditions[2] == "choice":
     Instructions3 = Selection
 else:
@@ -315,5 +446,7 @@ if __name__ == "__main__":
          Instructions2,
          BlockTwo,
          Instructions3,
-         BlockThree
+         BlockThree,
+         EndCheating,
+         DebriefCheating
          ])
