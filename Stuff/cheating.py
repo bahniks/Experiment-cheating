@@ -44,7 +44,9 @@ controltext2 = "V tomto kole jste {}"
 wintext = "vyhráli {} {}.".format(WIN, CURRENCY)
 losstext = "nevyhráli nic."
 
-choicetext = """Jak jste si všimli, tento experimentální úkol nabýval dvou podob:
+choicetext = """Tímto skončilo druhých 10 kol. Bude-li tento blok kol vylosován, získáte odměnu {} {}.
+
+Jak jste si všimli, tento experimentální úkol nabýval dvou podob:
 
 Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
 Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
@@ -53,11 +55,25 @@ Nyní proběhne posledních 10 kol úkolu. Můžete si sami vybrat, zda je chcet
 - 1. podobě  
 - 2. podobě
 - necháte rozhodnout náhodu, tj. s poloviční pravděpodobností budete přiřazeni do 1. podoby úkolu s poloviční pravděpodobností do 2. podoby úkolu.
-"""
+""".format("{}", CURRENCY)
 
+# buttons
 controlchoicetext = "1. podoba"
 treatmentchoicetext = "2. podoba"
 randomchoicetext = "Rozhodne náhoda"   
+
+nochoicetext = """Tímto skončilo druhých 10 kol. Bude-li tento blok kol vylosován, získáte odměnu {} {}.
+
+Jak jste si všimli, tento experimentální úkol nabýval dvou podob:
+
+Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
+Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
+
+Náhodně jste byli přiřazení do {} úkolu.
+""".format("{}", CURRENCY, "{}")
+
+firstversiontext = "first version"
+secondversiontext = "second version"
 
 intro_block_1 = """
 V tomto úkolu budete předpovídat, zda při virtuálním hodu kostkou nakonec padne lichý či sudý počet bodů. Virtuální kostka je generátor náhodných čísel, který se náhodě zastaví a ukáže 1, 2, 3, 4, 5 nebo 6 bodů. Liché hody jsou 1, 3 a 5. Sudé hody jsou 2, 4 a 6.
@@ -71,15 +87,14 @@ intro_block_2 = """
 Tímto skončilo prvních 10 kol. Bude-li tento blok kol vylosován, získáte odměnu {} {}. Nyní proběhne druhých 10 kol.
 """.format("{}", CURRENCY)
 
-intro_block_3 = """
-Intro3
-"""
+endtext = """Tímto skončilo posledních 10 kol. Pokud by byl tento blok kol vylosován, získál(a) byste odměnu {} {}.
 
-endtext = """
 Tímto část experimentu s hádáním bodů na kostce končí.
+
 Náhodně byl vybrán k vyplacení blok {}.
+
 Vydělali jste si tedy {} {}.
-"""
+""".format("{}", CURRENCY, "{}", "{}", CURRENCY)
 
 debrieftext = """
 Jak již bylo zmíněno, experimentální úkol nabýval dvou podob:
@@ -113,11 +128,11 @@ class Cheating(ExperimentFrame):
 
         #######################
         # adjustable parameters
-        self.trials = 2
+        self.trials = 10
         self.pause_after_roll = 0.5
         self.pause_before_trial = 0.2
         self.displayNum = self.createDots # self.createDots or self.createText
-        self.fakeRolling = True
+        self.fakeRolling = True # False for testing
         self.diesize = 240
         #######################
 
@@ -174,7 +189,9 @@ class Cheating(ExperimentFrame):
             self.startTrial()
         else:
             if self.blockNumber == 1:
-                self.root.texts["win1"] = self.root.wins[self.blockNumber - 1] * WIN
+                self.root.texts["win1"] = self.root.wins[0] * WIN
+            elif self.blockNumber == 2:
+                self.root.texts["win2"] = self.root.wins[1] * WIN
             self.nextFun()
 
 
@@ -306,7 +323,7 @@ class Cheating(ExperimentFrame):
 
 class Selection(InstructionsFrame):
     def __init__(self, root):
-        super().__init__(root, text = choicetext, proceed = False)
+        super().__init__(root, text = choicetext, proceed = False, update = ["win2"], height = 12)
 
         ttk.Style().configure("TButton", font = "helvetica 15", width = 16)
 
@@ -335,9 +352,12 @@ class Selection(InstructionsFrame):
 class EndCheating(InstructionsFrame):
     def __init__(self, root):
         block = random.randint(1, 3)
-        text = endtext.format(block, root.wins[block-1] * WIN, CURRENCY)
-        super().__init__(root, text = text, width = 60)
-
+        text = endtext.format(root.wins[2] * WIN, block, root.wins[block-1] * WIN)
+        super().__init__(root, text = text)
+        self.file.write("Win cheating\n" + self.id + "\t")
+        self.file.write(str(block) + "\t" + str(root.wins[block-1] * WIN))
+        self.file.write("\n\n")
+       
 
         
 class DebriefCheating(ExperimentFrame):
@@ -431,8 +451,9 @@ Instructions2 = (InstructionsFrame, {"text": intro_block_2, "height": 5, "update
 if conditions[2] == "choice":
     Instructions3 = Selection
 else:
-    Instructions3 = (InstructionsFrame, {"text": intro_block_3, "height": 5})
-
+    addedtext = secondversiontext if conditions[2] == "treatment" else firstversiontext
+    nochoicetext = nochoicetext.format("{}", addedtext)
+    Instructions3 = (InstructionsFrame, {"text": nochoicetext, "height": 12, "update": ["win2"]})
 BlockOne = (Cheating, {"block": 1})
 BlockTwo = (Cheating, {"block": 2})
 BlockThree = (Cheating, {"block": 3})
