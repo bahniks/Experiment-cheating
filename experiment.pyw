@@ -8,8 +8,8 @@ sys.path.append(os.path.join(os.getcwd(), "Stuff"))
 
 from gui import GUI
 
-from questionnaire import Work
-from quest import QuestInstructions, Hexaco, Prosociality
+from questionnaire import Prosociality, Values1, Values2, Values3
+from quest import QuestInstructions, Hexaco, BIDR, Agency, Disengagement, Work
 from intros import ending, Intro
 from comments import Comments
 from demo import Demographics
@@ -29,9 +29,15 @@ frames = [Intro,
           DebriefCheating,
           QuestInstructions,
           Hexaco,
+          BIDR,
+          Agency,
+          Disengagement,
           Prosociality,
           Work,
           Demographics,
+          Values1,
+          Values2,
+          Values3,
           Debriefing
           #ending
          ]

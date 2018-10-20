@@ -133,6 +133,7 @@ class Demographics(ExperimentFrame):
             self.next["state"] = "!disabled"
 
     def write(self):
+        self.root.texts ["gender"] = self.sex.get()
         self.file.write("Demographics\n")
         self.file.write("\t".join([self.id, self.sex.get(), self.age.get(), self.language.get(),
                                    self.student.get(), self.field.get(),

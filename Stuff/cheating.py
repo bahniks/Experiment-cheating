@@ -8,14 +8,11 @@ import os
 
 from common import ExperimentFrame, InstructionsFrame, Measure
 from gui import GUI
+from constants import CURRENCY, WIN
 
 
 ################################################################################
 # TEXTS
-
-CURRENCY = "Kč"
-WIN = 50
-
 
 continuetext = "Pokračovat"
 oddtext = "Liché"
