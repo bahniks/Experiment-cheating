@@ -14,106 +14,107 @@ from constants import CURRENCY, WIN
 ################################################################################
 # TEXTS
 
-continuetext = "Pokračovat"
-oddtext = "Liché"
-eventext = "Sudé"
-rolltext = "Hodit kostkou"
-correcttext = "Uhodl(a)"
-incorrecttext = "Neuhodl(a)"    
+continuetext = "Continue"
+oddtext = "Odd (1,3,5)"
+eventext = "Even (2,4,6)"
+rolltext = "Roll a die"
+correcttext = "Predicted correctly"
+incorrecttext = "Predicted incorrectly"    
 
-treatmenttext = '''{}. kolo
+treatmenttext = '''{}. round
 
-Rozhodněte se, zda v tomto kole na kostce padne lichý či sudý počet bodů.
+Decide whether an odd or even number will be rolled on a die in this trial and remember your choice.
 
-Svoji volbu si zapamatujte.
-
-Zmáčkněte tlačítko "{}".
+Press "{}".
 '''.format("{}", rolltext)
 
-treatmenttext2 = "Stanovte, zda jste uhodli a vyhráli {} {} nebo neuhodli a nevyhráli nic.".format(WIN, CURRENCY)
+treatmenttext2 = "Select whether you predicted correctly and earned {} {} or whether you predicted incorrectly and earned nothing in this trial.".format(WIN, CURRENCY)
 
 controltext = """{}. kolo
 
-Rozhodněte se, zda v tomto kole na kostce padne lichý či sudý počet bodů.
+Decide whether an odd or even number will be rolled on a die in this trial.
 """
 
-controltext2 = "V tomto kole jste {}"
-wintext = "vyhráli {} {}.".format(WIN, CURRENCY)
-losstext = "nevyhráli nic."
+controltext2 = "In this trial, your prediction was {}"
+wintext = "correct and you earned {} {}.".format(WIN, CURRENCY)
+losstext = "incorrect and you earned nothing."
 
-choicetext = """Tímto skončilo druhých 10 kol. Bude-li tento blok kol vylosován, získáte odměnu {} {}.
+choicetext = """This is the end of the second set of 10 trials. If this set is chosen, you will receive {} {}.
 
-Jak jste si všimli, tento experimentální úkol nabýval dvou podob:
+As you have noticed, there were two versions of the task:
 
-Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
-Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
+Version BEFORE, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
+Version AFTER, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made and you see its result.
 
-Nyní proběhne posledních 10 kol úkolu. Můžete si sami vybrat, zda je chcete řešit v:
-- 1. podobě  
-- 2. podobě
-- necháte rozhodnout náhodu, tj. s poloviční pravděpodobností budete přiřazeni do 1. podoby úkolu s poloviční pravděpodobností do 2. podoby úkolu.
+Now, the last set of 10 trials is about to begin. You can choose which version of the task you want for the last set:
+- BEFORE version  
+- AFTER version
+- select one of the two version at random (that is, you will have 50% chance to get the BEFORE version and 50% chance to get the AFTER version of the task).
 """.format("{}", CURRENCY)
 
 # buttons
-controlchoicetext = "1. podoba"
-treatmentchoicetext = "2. podoba"
-randomchoicetext = "Rozhodne náhoda"   
+controlchoicetext = "BEFORE version"
+treatmentchoicetext = "AFTER version"
+randomchoicetext = "random selection"   
 
-nochoicetext = """Tímto skončilo druhých 10 kol. Bude-li tento blok kol vylosován, získáte odměnu {} {}.
+nochoicetext = """This is the end of the second set of 10 trials. If this set is chosen, you will receive {} {}.
 
-Jak jste si všimli, tento experimentální úkol nabýval dvou podob:
+As you have noticed, there were two versions of the task:
 
-Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
-Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
+Version BEFORE, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
+Version AFTER, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made and you see its result.
 
-Náhodně jste byli přiřazení do {} úkolu.
+Now, the last set of 10 trials is about to begin. For the last set, you were randomly assigned the {} of the task.
 """.format("{}", CURRENCY, "{}")
 
-firstversiontext = "first version"
-secondversiontext = "second version"
+firstversiontext = "BEFORE version"
+secondversiontext = "AFTER version"
 
 intro_block_1 = """
-V tomto úkolu budete předpovídat, zda při virtuálním hodu kostkou nakonec padne lichý či sudý počet bodů. Virtuální kostka je generátor náhodných čísel, který se náhodě zastaví a ukáže 1, 2, 3, 4, 5 nebo 6 bodů. Liché hody jsou 1, 3 a 5. Sudé hody jsou 2, 4 a 6.
+In the following task, you have to predict whether an odd or even number will be rolled on a virtual die on your computer. Numbers 1, 2, 3, 4, 5, and 6 can be rolled with equal probability. Odd numbers are 1, 3, and 5. Even numbers are 2, 4, and 6.
 
-Nejprve se uskuteční 10 kol, poté nastane pauza, nato se uskuteční dalších 10 kol, nastane opět pauza a poté se uskuteční posledních 10 kol (celkem tedy budete předpovídat 30 kol hodů kostkou). 
+You will make predictions in 3 sets consisting of 10 trials each. There will be a short break after each set.
 
-Za každou správnou předpověď, zda padne sudý či lichý počet bodů, získáte na konci experimentu {} {}. Kdybyste uhodli všechny hody získáte tedy {} {}, když neuhodnete žádný, nezískáte v tomto úkolu nic.
-""".format(WIN, CURRENCY, WIN*30, CURRENCY)
+For every trial with a correct prediction, you earn {} {}.
+
+After completing all three sets, one set will be chosen at random. You will only receive money earned in the chosen set. Therefore, if you make correct predictions in all 10 trials of a set that is later chosen, you will receive {} {}. The number of correct predictions in the two remaining sets does not affect the amount of money that you will receive in any way.
+""".format(WIN, CURRENCY, WIN*10, CURRENCY)
 
 intro_block_2 = """
-Tímto skončilo prvních 10 kol. Bude-li tento blok kol vylosován, získáte odměnu {} {}. Nyní proběhne druhých 10 kol.
+This is the end of the first set of 10 trials. If this set is chosen, you will receive {} {}. Now, the second block of 10 trials begins.
 """.format("{}", CURRENCY)
 
-endtext = """Tímto skončilo posledních 10 kol. Pokud by byl tento blok kol vylosován, získál(a) byste odměnu {} {}.
+endtext = """This is the end of the last set of 10 trials. If this set is chosen, you will receive {} {}.
 
-Tímto část experimentu s hádáním bodů na kostce končí.
+This is the end of the dice rolling task.
 
-Náhodně byl vybrán k vyplacení blok {}.
+The set number {} was randomly selected.
 
-Vydělali jste si tedy {} {}.
+You will therefore receive {} {}.
 """.format("{}", CURRENCY, "{}", "{}", CURRENCY)
 
 debrieftext = """
-Jak již bylo zmíněno, experimentální úkol nabýval dvou podob:
+As was mentioned before, the dice rolling task had two versions:
 
-Zaznamenali jste, jakou stranu předpovídáte. Poté proběhl hod a následně jste se dozvěděli, zda jste vyhráli či nikoliv.
+Version BEFORE, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
 
-Rozhodli jste se, jakou stranu předpovídáte. Poté proběhl hod a následně jste sami určili, zda jste vyhráli či nikoliv.
+Version AFTER, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made any you see its result.
 
-Please rate how much do you agree for each versions of the task that with several characterizations.
+Please rate how much do you agree or disagree with each of the following characterization for each version of the task.
 """
 
-debriefquest1 = "How much do you agree for the first version that ..."
-debriefquest2 = "How much do you agree for the second version that ..."
+debriefquest1 = "How much do you agree that the BEFORE version of the task ..."
+debriefquest2 = "How much do you agree that the AFTER version of the task ..."
 debriefscale1 = "completely disagree"
 debriefscale2 = "disagree"
 debriefscale3 = "agree"
-debriefscale4 = "compeletely agree"
+debriefscale4 = "completely agree"
 
-debriefdimensions = ["... it required attention",
-                     "... it required logical thinking",
-                     "... it was possible to behave immorally in it",
-                     "... it was acceptable to behave immorally in it"]
+debriefdimensions = ["... required attention",
+                     "... required logical thinking",
+                     "... enabled immoral behavior",
+                     "... made immoral behavior acceptable"]
+
 
 
 ################################################################################
@@ -226,9 +227,9 @@ class Cheating(ExperimentFrame):
         if "treatment" in self.condition:
             self.bottomText.insert("1.0", treatmenttext2)
             self.winButton = ttk.Button(self.bottomButtonFrame, text = correcttext,
-                                         command = lambda: self.answer("win"))
+                                         command = lambda: self.answer("win"), width = 18)
             self.lossButton = ttk.Button(self.bottomButtonFrame, text = incorrecttext,
-                                        command = lambda: self.answer("loss"))
+                                        command = lambda: self.answer("loss"), width= 18)
             self.winButton.grid(row = 0, column = 0, padx = 30)
             self.lossButton.grid(row = 0, column = 2, padx = 30)
         elif "control" in self.condition:
@@ -320,7 +321,7 @@ class Cheating(ExperimentFrame):
 
 class Selection(InstructionsFrame):
     def __init__(self, root):
-        super().__init__(root, text = choicetext, proceed = False, update = ["win2"], height = 12)
+        super().__init__(root, text = choicetext, proceed = False, update = ["win2"], height = 17)
 
         ttk.Style().configure("TButton", font = "helvetica 15", width = 16)
 
@@ -361,7 +362,7 @@ class DebriefCheating(ExperimentFrame):
     def __init__(self, root):
         super().__init__(root)
 
-        self.text = Text(self, height = 10, width = 90, relief = "flat", font = "helvetica 15")
+        self.text = Text(self, height = 11, width = 90, relief = "flat", font = "helvetica 15", wrap = "word")
         self.text.insert("1.0", debrieftext)
         self.text["state"] = "disabled"
         self.text.grid(row = 1, column = 1)
@@ -443,7 +444,7 @@ if random.random() < 0.5:
 else:
     conditions.append("choice")
 
-Instructions1 = (InstructionsFrame, {"text": intro_block_1, "height": 12})
+Instructions1 = (InstructionsFrame, {"text": intro_block_1, "height": 14})
 Instructions2 = (InstructionsFrame, {"text": intro_block_2, "height": 5, "update": ["win1"]})
 if conditions[2] == "choice":
     Instructions3 = Selection

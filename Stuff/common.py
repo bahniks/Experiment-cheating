@@ -64,7 +64,7 @@ class InstructionsFrame(ExperimentFrame):
 
         if proceed:
             ttk.Style().configure("TButton", font = "helvetica 15")
-            self.next = ttk.Button(self, text = "Pokračovat", command = self.nextFun)
+            self.next = ttk.Button(self, text = "Continue", command = self.nextFun)
             self.next.grid(row = 2, column = 1)
         elif space:
             self.root.bind("<space>", lambda e: self.proceed())
