@@ -5,17 +5,20 @@ import random
 ################################################################################
 # TEXTS
 intro = """
-Vítáme Vás na výzkumu pořádaného ve spolupráci s Fakultou podnikohospodářskou Vysoké školy ekonomické v Praze. Experiment brzy začne. V rámci experimentu budete řešit několik na sobě nezávislých úkolů a odpovídat na sérii otázek. Již nyní jste získali X,- Kč jako odměnu za svou účast. Níže vidíte zjednodušené schéma průběhu dnešního experimentu:
+Welcome to the research study conducted in cooperation with the Faculty of Business Administration at the University of Economics, Prague. The study consists of several different tasks and questionnaires. Below you see a basic outline of the study:
+1) Dice rolling task: You will predict whether odd or even number will be rolled on a die. You will make predictions for 3 sets consisting of 10 trials each. You can earn money in this part.
+2) Lottery task: You will choose a lottery. You can earn money depending on the outcome of the chosen lottery.
+3) Distribution of money: You will learn how much you have earned in the previous parts and you can decide what to do with your earnings.
+4) Questionnaires: You will answer questions about your characteristics and attitudes. There will be items checking whether you pay attention to the questions. If you answer these attention checks correctly, you can earn additional money.
+5) End of the study and payment: After you are finished, you can go to the next room where you signed a contract based on which you will receive all your money into your bank account. Because only the overall sum will be in the contract, nobody will know how much money did you earn in different parts of the study or how did you decide to distribute it.  
 
-1) Úloha s hádáním strany kostky: Ve 3 kolech hádáte zda padne lichý či sudý počet bodů. Můžete si vydělat finanční odměnu.
-2) Úloha s loterií: Vyberete jednu z loterií. Můžete si vydělat další finanční odměnu.
-3) Rozhodnutí o alokaci peněz.
-4) Soubor otázek a úkolů na zjištění vašich vlastností a postojů. 
-5) Ve vedlejší místnosti Vám bude vyplacena celková získaná odměna.
+Thank you for turning off your mobile phones completely and please do not communicate with others in any way during the study. In case you are communicating with other participants or disturbing the study in any other way, you will be asked to leave the laboratory without payment.
 
-Děkujeme, že jste zcela vypnuli svůj mobilní telefon (nejen zvonění) a v průběhu experimentu s nikým nebudete komunikovat. V případě komunikace s ostatními účastníky nebo jiného narušování experimentu Vás experimentátor vyzve k ukončení Vaší účasti bez nároku na odměnu. 
+In case you have any questions or you encounter any technical difficulties during the task, just raise your hand and wait for a research assistant.
 
-V případě jakýchkoliv nejasností či problémů, prosíme, přivolejte experimentátora zvednutím ruky.  
+Please write down the number of your workstation in the box:
+
+Please, do not continue with the study until you are asked to by a research assistant. 
 """
 
 
