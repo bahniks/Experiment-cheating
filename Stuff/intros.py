@@ -6,6 +6,7 @@ import random
 # TEXTS
 intro = """
 Welcome to the research study conducted in cooperation with the Faculty of Business Administration at the University of Economics, Prague. The study consists of several different tasks and questionnaires. Below you see a basic outline of the study:
+
 1) Dice rolling task: You will predict whether odd or even number will be rolled on a die. You will make predictions for 3 sets consisting of 10 trials each. You can earn money in this part.
 2) Lottery task: You will choose a lottery. You can earn money depending on the outcome of the chosen lottery.
 3) Distribution of money: You will learn how much you have earned in the previous parts and you can decide what to do with your earnings.
@@ -15,8 +16,6 @@ Welcome to the research study conducted in cooperation with the Faculty of Busin
 Thank you for turning off your mobile phones completely and please do not communicate with others in any way during the study. In case you are communicating with other participants or disturbing the study in any other way, you will be asked to leave the laboratory without payment.
 
 In case you have any questions or you encounter any technical difficulties during the task, just raise your hand and wait for a research assistant.
-
-Please write down the number of your workstation in the box:
 
 Please, do not continue with the study until you are asked to by a research assistant. 
 """
@@ -40,7 +39,7 @@ lostending = "V loterii jste nebyl(a) vylosován/a a bohužel si tedy domů vybr
 
 
 
-Intro = (InstructionsFrame, {"text": intro})
+Intro = (InstructionsFrame, {"text": intro, "keys": ["g", "G"], "proceed": False, "height": 25})
 
 
 class Ending(InstructionsFrame):

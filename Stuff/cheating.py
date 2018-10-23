@@ -21,7 +21,7 @@ rolltext = "Roll a die"
 correcttext = "Predicted correctly"
 incorrecttext = "Predicted incorrectly"    
 
-treatmenttext = '''{}. round
+treatmenttext = '''Round {}
 
 Decide whether an odd or even number will be rolled on a die in this trial and remember your choice.
 
@@ -30,7 +30,7 @@ Press "{}".
 
 treatmenttext2 = "Select whether you predicted correctly and earned {} {} or whether you predicted incorrectly and earned nothing in this trial.".format(WIN, CURRENCY)
 
-controltext = """{}. kolo
+controltext = """Round {}
 
 Decide whether an odd or even number will be rolled on a die in this trial.
 """
@@ -87,11 +87,7 @@ This is the end of the first set of 10 trials. If this set is chosen, you will r
 endtext = """This is the end of the last set of 10 trials. If this set is chosen, you will receive {} {}.
 
 This is the end of the dice rolling task.
-
-The set number {} was randomly selected.
-
-You will therefore receive {} {}.
-""".format("{}", CURRENCY, "{}", "{}", CURRENCY)
+""".format("{}", CURRENCY)
 
 debrieftext = """
 As was mentioned before, the dice rolling task had two versions:
@@ -143,12 +139,14 @@ class Cheating(ExperimentFrame):
 
         self.file.write("Cheating {}\n".format(block))
 
-        self.upperText = Text(self, height = 8, width = 80, relief = "flat", font = "helvetica 15")
+        self.upperText = Text(self, height = 8, width = 80, relief = "flat", font = "helvetica 15",
+                              wrap = "word")
         self.upperButtonFrame = Canvas(self, highlightbackground = "white", highlightcolor = "white",
                                        background = "white", height = 100)
         self.die = Canvas(self, highlightbackground = "white", highlightcolor = "white",
                           background = "white", width = self.diesize, height = self.diesize)
-        self.bottomText = Text(self, height = 3, width = 80, relief = "flat", font = "helvetica 15")
+        self.bottomText = Text(self, height = 3, width = 80, relief = "flat", font = "helvetica 15",
+                               wrap = "word")
         self.bottomButtonFrame = Canvas(self, highlightbackground = "white", highlightcolor = "white",
                                         background = "white", height = 100)
 
@@ -190,6 +188,8 @@ class Cheating(ExperimentFrame):
                 self.root.texts["win1"] = self.root.wins[0] * WIN
             elif self.blockNumber == 2:
                 self.root.texts["win2"] = self.root.wins[1] * WIN
+            elif self.blockNumber == 3:
+                self.root.texts["win3"] = self.root.wins[2] * WIN
             self.nextFun()
 
 
@@ -344,17 +344,6 @@ class Selection(InstructionsFrame):
             else:
                 conditions[2] += "_" + "control"
         self.nextFun()
-
-
-
-class EndCheating(InstructionsFrame):
-    def __init__(self, root):
-        block = random.randint(1, 3)
-        text = endtext.format(root.wins[2] * WIN, block, root.wins[block-1] * WIN)
-        super().__init__(root, text = text)
-        self.file.write("Win cheating\n" + self.id + "\t")
-        self.file.write(str(block) + "\t" + str(root.wins[block-1] * WIN))
-        self.file.write("\n\n")
        
 
         
@@ -431,6 +420,19 @@ class OneFrame(Canvas):
             self.file.write(str(self.answers.index(measure.answer.get()) + 1))
             self.file.write("\t")
      
+
+
+
+
+
+##class EndCheating(InstructionsFrame):
+##    def __init__(self, root):
+##        block = random.randint(1, 3)
+##        text = endtext.format(root.wins[2] * WIN, block, root.wins[block-1] * WIN)
+##        super().__init__(root, text = text)
+##        self.file.write("Win cheating\n" + self.id + "\t")
+##        self.file.write(str(block) + "\t" + str(root.wins[block-1] * WIN))
+##        self.file.write("\n\n")
             
 
         
@@ -455,6 +457,8 @@ else:
 BlockOne = (Cheating, {"block": 1})
 BlockTwo = (Cheating, {"block": 2})
 BlockThree = (Cheating, {"block": 3})
+
+EndCheating = (InstructionsFrame, {"text": endtext, "height": 5, "update": ["win3"]})
 
 
 

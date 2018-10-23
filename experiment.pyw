@@ -16,6 +16,7 @@ from demo import Demographics
 from cheating import Instructions1, BlockOne, Instructions2, BlockTwo, Instructions3, BlockThree
 from cheating import EndCheating, DebriefCheating
 from debriefing import Debriefing
+from charity import Charity
 
 
 frames = [Intro,
@@ -26,7 +27,7 @@ frames = [Intro,
           Instructions3,
           BlockThree,
           EndCheating,
-          DebriefCheating,
+          Charity,
           QuestInstructions,
           Hexaco,
           BIDR,
@@ -38,6 +39,7 @@ frames = [Intro,
           Values1,
           Values2,
           Values3,
+          DebriefCheating,
           Debriefing
           #ending
          ]
