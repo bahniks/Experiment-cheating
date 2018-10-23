@@ -17,6 +17,7 @@ from cheating import Instructions1, BlockOne, Instructions2, BlockTwo, Instructi
 from cheating import EndCheating, DebriefCheating
 from debriefing import Debriefing
 from charity import Charity
+from lottery import Lottery
 
 
 frames = [Intro,
@@ -28,6 +29,7 @@ frames = [Intro,
           BlockThree,
           EndCheating,
           Charity,
+          Lottery,
           QuestInstructions,
           Hexaco,
           BIDR,
