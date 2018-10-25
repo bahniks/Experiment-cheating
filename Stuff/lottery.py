@@ -16,10 +16,10 @@ from constants import CURRENCY, WIN, COUNTRY
 # TEXTS
 
 optionsChina = ((50, 60, 70, 80, 90),
-                ("30%", "40%", "50%", "60%", "70%"),
+                (30, 40, 50, 60, 70),
                 (100, 100, 100, 100, 100))
 optionsCzechia = ((50, 60, 70, 80, 90),
-                  ("30%", "40%", "50%", "60%", "70%"),
+                  (30, 40, 50, 60, 70),
                   (100, 100, 100, 100, 100))
 
 instructions = """
@@ -53,6 +53,7 @@ class Lottery(ExperimentFrame):
             options = optionsChina
         elif COUNTRY == "CZECHIA":
             options = optionsCzechia
+        self.options = options
 
         self.variables = OrderedDict()
         self.rbuttonsL = {}
@@ -65,7 +66,7 @@ class Lottery(ExperimentFrame):
                                                 command = self.checkAllFilled)
             self.rbuttonsL[i].grid(column = 1, row = row, sticky = W, padx = 30)
             self.rbuttonsR[i] = ttk.Radiobutton(self, variable = self.variables[i], value = str(i+1) + "risky",
-                                                text = " {} {} {}".format(options[1][i], options[2][i], CURRENCY),
+                                                text = " {}% {} {}".format(options[1][i], options[2][i], CURRENCY),
                                                 command = self.checkAllFilled)
             self.rbuttonsR[i].grid(column = 2, row = row, sticky = W, padx = 30)
 
@@ -90,7 +91,21 @@ class Lottery(ExperimentFrame):
 
 
     def write(self):
-        self.file.write("Charity\n")
+        selected = random.randint(1, 5)
+        self.root.texts["lottery_selected"] = selected
+        if "risky" in self.variables[selected - 1].get():
+            self.root.texts["lottery_chosen"] = "risky"
+            if random.random() * 100 < self.options[1][selected - 1]:
+                win = self.options[2][selected - 1]
+                self.root.texts["lottery_random"] = "won"
+            else:
+                win = 0
+                self.root.texts["lottery_random"] = "lost"
+        else:
+            self.root.texts["lottery_chosen"] = "safe"
+            win = self.options[0][selected - 1]
+        self.file.write("Lottery\n")
+        self.root.texts["lottery_win"] = win
         self.file.write("\t".join([self.id] + [var.get() for var in self.variables.values()]) + "\n")
 
 

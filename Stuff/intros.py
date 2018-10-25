@@ -23,42 +23,18 @@ Please, do not continue with the study until you are asked to by a research assi
 
 
 endingtext = """
-Děkujeme za Vaši účast!
+Výsledky experimentu budou po vyhodnocení a publikování volně dostupné na webových stránkách laboratoře a na serveru https://osf.io/. Prosíme Vás, abyste o výzkumu nemluvili s dalšími potenciálními účastníky, aby tak nebyly ovlivněny jejich odpovědi a chování. Přihlaste se rukou, experimentátor přijde a experiment ukončí.
 
-Prosíme, abyste informace o těchto experimentech nešířil(a) během následujících 3 měsíců. Zejména Vás žádáme, abyste tyto informace nešířil(a) mezi potenciální účastníky a účastnice těchto experimentů. 
+Poté si prosím vezměte všechny své osobní věci a tak, abyste nerušili ostatní účastníky, se odeberte do vedlejší místnosti, kde Vám bude vyplacena odměna.
 
-{}
-
-Nyní si můžete vzít své věci a přejít do vedlejší místnosti, kde Vám bude vyplacena odměna. 
-Tím Vaše účast na dnešní studii končí. Ještě jednou děkujeme!
+Tímto celý experiment končí, děkujeme Vám za účast! 
+ 
+Pracovníci laboratoří CEBEX / PLESS  
 """
 
-winending = "V loterii jste byl(a) vylosován(a) a z vybraných produktů si tedy jako výhru tři odnesete. Z výrobků, které jste si vybral(a), byly tři náhodně vylosovány. Na papírek ležící na stole napište číslo Vašeho pracovního místa a níže uvedené kódy vyhraných produktů:\n{}  {}  {}\nPro případ, že by tyto produkty nebyly v zásobách, si prosím zapište také tyto kódy náhradních produktů:\n{}  {}  {}\n\nPapírek si s sebou vezměte a předejte ho experimentátorovi."
-lostending = "V loterii jste nebyl(a) vylosován/a a bohužel si tedy domů vybrané produkty neodnesete. Dostanete však samozřejmě svou řádnou odměnu za účast v experimentu."
 ################################################################################
 
 
 
 Intro = (InstructionsFrame, {"text": intro, "keys": ["g", "G"], "proceed": False, "height": 25})
-
-
-class Ending(InstructionsFrame):
-    def __init__(self):
-        pass
-    
-    def __call__(self, root):
-        win = random.random() < 1/8
-        if win and hasattr(root, "selected"):
-            keys = [key for key in root.selected.keys()]
-            keys = random.sample(keys, 6)
-            prize = []
-            for key in keys:
-                prize.append(str(int(key) + (int(random.choice(root.selected[key])) - 1)*16))
-            root.file.write("Won products\n" + "\n".join(prize))
-            text = endingtext.format(winending.format(*prize))
-        else:
-            text = endingtext.format(lostending)
-        super().__init__(root, text, height = 30, font = 15, proceed = False)
-        return self
-
-ending = Ending()
+Ending = (InstructionsFrame, {"text": endingtext, "keys": ["g", "G"], "proceed": False, "height": 10})

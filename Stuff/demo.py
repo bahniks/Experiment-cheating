@@ -6,6 +6,7 @@ import os
 
 from common import ExperimentFrame
 from gui import GUI
+from constants import CURRENCY
 
 
 class Demographics(ExperimentFrame):
@@ -122,6 +123,8 @@ class Demographics(ExperimentFrame):
         self.rowconfigure(0, weight = 1)
         self.rowconfigure(11, weight = 1)
 
+        self.writeWinnings()
+
         self.next = ttk.Button(self, text = "Pokračovat", command = self.nextFun,
                                state = "disabled")
         self.next.grid(row = 11, column = 1, pady = 15, columnspan = 3)
@@ -131,6 +134,31 @@ class Demographics(ExperimentFrame):
         if all([v.get() for v in [self.language, self.age, self.sex, self.field, self.student,
                                   self.education, self.religion]]):
             self.next["state"] = "!disabled"
+
+
+    def writeWinnings(self):
+        options = os.path.join(os.path.dirname(os.path.dirname(__file__)), "options.txt")
+        if os.path.exists(options):
+            with open(options, mode = "r") as f:
+                directory = f.readline().strip()
+                station = f.readline().strip()
+        else:
+            directory = os.path.dirname(self.root.outputfile)
+            station = "UNKNOWN"
+        filename = os.path.splitext(os.path.basename(self.root.outputfile))[0]
+        output = os.path.join(directory, filename + "_STATION_" + str(station) + ".txt")
+        # pridat attention check
+        if all([key in self.root.texts for key in ["dice", "charity", "donation", "lottery_win"]]):
+            dice = self.root.texts["dice"]
+            charity = self.root.texts["charity"]
+            donation = self.root.texts["donation"]
+            lottery = self.root.texts["lottery_win"]
+            with open(output, mode = "w", encoding="utf-8") as infile:
+                infile.write("reward: " + str(dice + lottery - donation) + CURRENCY + "\n\n")
+                infile.write(charity + ": " + str(donation) + CURRENCY + "\n\n")
+                infile.write("dice: " + str(dice) + CURRENCY + "\n")
+                infile.write("lottery: " + str(lottery) + CURRENCY)
+        
 
     def write(self):
         self.root.texts ["gender"] = self.sex.get()

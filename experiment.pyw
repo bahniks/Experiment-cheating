@@ -10,8 +10,7 @@ from gui import GUI
 
 from questionnaire import Prosociality, Values1, Values2, Values3
 from quest import QuestInstructions, Hexaco, BIDR, Agency, Disengagement, Work
-from intros import ending, Intro
-from comments import Comments
+from intros import Intro, Ending
 from demo import Demographics
 from cheating import Instructions1, BlockOne, Instructions2, BlockTwo, Instructions3, BlockThree
 from cheating import EndCheating, DebriefCheating
@@ -42,8 +41,8 @@ frames = [Intro,
           Values2,
           Values3,
           DebriefCheating,
-          Debriefing
-          #ending
+          Debriefing,
+          Ending
          ]
 
 

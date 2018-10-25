@@ -49,7 +49,7 @@ class Charity(ExperimentFrame):
             win = self.root.texts["win" + str(selected)]
         else:
             win = 5*WIN # for testing
-           
+        self.root.texts["dice"] = win           
       
         self.charity = StringVar()
         self.money = IntVar()
@@ -128,6 +128,8 @@ class Charity(ExperimentFrame):
             charity = "NA"
         else:
             charity = self.charity.get()
+        self.root.texts["charity"] = charity
+        self.root.texts["donation"] = self.money.get()
         self.file.write("\t".join([self.id, charity, str(self.money.get())]) + "\n")
 
 
