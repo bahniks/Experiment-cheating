@@ -1,6 +1,0 @@
-reward: 100¥
-
-China Foundation for Poverty Alleviation: 9¥
-
-dice: 15¥
-lottery: 0¥bonus: 25¥
