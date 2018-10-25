@@ -4,9 +4,11 @@ from tkinter import ttk
 
 import os
 
+from math import ceil
+
 from common import ExperimentFrame
 from gui import GUI
-from constants import CURRENCY
+from constants import CURRENCY, BONUS, ROUNDING
 
 
 class Demographics(ExperimentFrame):
@@ -142,22 +144,29 @@ class Demographics(ExperimentFrame):
             with open(options, mode = "r") as f:
                 directory = f.readline().strip()
                 station = f.readline().strip()
+            if not os.path.exists(directory):
+                directory = os.path.dirname(self.root.outputfile)
         else:
             directory = os.path.dirname(self.root.outputfile)
             station = "UNKNOWN"
         filename = os.path.splitext(os.path.basename(self.root.outputfile))[0]
         output = os.path.join(directory, filename + "_STATION_" + str(station) + ".txt")
-        # pridat attention check
-        if all([key in self.root.texts for key in ["dice", "charity", "donation", "lottery_win"]]):
+        if all([key in self.root.texts for key in ["dice", "charity", "donation",
+                                                   "lottery_win", "attention_checks"]]):
             dice = self.root.texts["dice"]
             charity = self.root.texts["charity"]
             donation = self.root.texts["donation"]
             lottery = self.root.texts["lottery_win"]
+            bonus = 0 if self.root.texts["attention_checks"] else BONUS
             with open(output, mode = "w", encoding="utf-8") as infile:
-                infile.write("reward: " + str(dice + lottery - donation) + CURRENCY + "\n\n")
+                reward = dice + lottery + bonus - donation
+                if ROUNDING:
+                    reward = ceil((reward)/85)*100
+                infile.write("reward: " + str(reward) + CURRENCY + "\n\n")
                 infile.write(charity + ": " + str(donation) + CURRENCY + "\n\n")
                 infile.write("dice: " + str(dice) + CURRENCY + "\n")
-                infile.write("lottery: " + str(lottery) + CURRENCY)
+                infile.write("lottery: " + str(lottery) + CURRENCY + "\n")
+                infile.write("bonus: " + str(bonus) + CURRENCY)
         
 
     def write(self):

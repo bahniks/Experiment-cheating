@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 
 import os
+import random
 
 from common import ExperimentFrame, InstructionsFrame
 from gui import GUI
@@ -15,10 +16,6 @@ V následující části bude uvedena řada výroků.
 Přečtěte si, prosím, postupně každý výrok a vždy se rozhodněte, jak moc s ním souhlasíte nebo nesouhlasíte.
 """
 
-QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 5})
-
-
-
 hexacoinstructions = """On the following pages you will find a series of statements about you.
 Please read each statement and decide how much you agree or disagree with that statement.
 """
@@ -29,17 +26,21 @@ bidrinstructions = "Please read each statement and indicate how true it is."
 
 workinstructions = "How comfortable would feel about engaging in the following behaviors at work?"
 
+attentiontext = "Select option "
+
 
 
 class Quest(ExperimentFrame):
-    def __init__(self, root, perpage, file, name, left, right, options = 5,
-                 instructions = "", height = 3, width = 80, center = False):
+    def __init__(self, root, perpage, file, name, left, right, options = 5, shuffle = True,
+                 instructions = "", height = 3, width = 80, center = False, checks = 0):
         super().__init__(root)
 
         self.perpage = perpage
         self.left = left
         self.right = right
         self.options = options
+        self.checks = checks != 0
+        self.name = name
 
         self.file.write("{}\n".format(name))
 
@@ -56,6 +57,13 @@ class Quest(ExperimentFrame):
         with open(os.path.join("Stuff", file)) as f:
             for line in f:
                 self.questions.append(line.strip())
+
+        if checks:
+            for i in range(checks):
+                self.questions.append(attentiontext + str(random.randint(1, options)))
+
+        if shuffle:
+            random.shuffle(self.questions)
 
         ttk.Style().configure("TButton", font = "helvetica 15")
         self.next = ttk.Button(self, text = "Continue", command = self.nextFun,
@@ -93,6 +101,10 @@ class Quest(ExperimentFrame):
             measure.grid_forget()
         if self.mnumber == len(self.questions):
             self.file.write("\n")
+            if self.checks:
+                self.file.write("Attention checks\n")
+                wrong_checks = str(self.root.texts["attention_checks"])
+                self.file.write(self.id + "\t" + self.name + "\t" + wrong_checks + "\n\n")
             self.destroy()
             self.root.nextFrame()
         else:
@@ -110,12 +122,13 @@ class Quest(ExperimentFrame):
 
 
 class Likert(Canvas):
-    def __init__(self, root, text, shortText = "", options = 5,
+    def __init__(self, root, text, options = 5, shortText = "",
                  left = "strongly disagree", right = "strongly agree"):
         super().__init__(root)
 
         self.root = root
-        self.text = shortText
+        self.text = text
+        self.short = shortText
         self.answer = StringVar()
         self["background"] = "white"
         self["highlightbackground"] = "white"
@@ -144,8 +157,14 @@ class Likert(Canvas):
 
 
     def write(self):
-        ans = "{}\t{}\n".format(self.text, self.answer.get())
-        self.root.file.write(self.root.id + "\t" + ans)
+        if attentiontext in self.text:
+            if not "attention_checks" in self.root.root.texts:
+                self.root.root.texts["attention_checks"] = 0
+            if self.answer.get() != self.text[-1]:
+                self.root.root.texts["attention_checks"] += 1
+        else:
+            ans = "{}\t{}\t{}\n".format(self.short, self.answer.get(), self.text.replace("\t", " "))
+            self.root.file.write(self.root.id + "\t" + ans)
 
 
     def check(self):
@@ -157,8 +176,8 @@ class Likert(Canvas):
 
 class Hexaco(Quest):
     def __init__(self, root):
-        super().__init__(root, 10, "hexaco.txt", "Hexaco", instructions = hexacoinstructions, width = 80,
-                         left = "strongly disagree", right = "strongly agree",
+        super().__init__(root, 9, "hexaco.txt", "Hexaco", instructions = hexacoinstructions, width = 80,
+                         left = "strongly disagree", right = "strongly agree", checks = 3,
                          height = 2, options = 5, center = True)
 
 class BIDR(Quest):
@@ -184,7 +203,7 @@ class Work(Quest):
                          height = 1, options = 7, center = True)
 
 
-
+QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 5})
 
 
 if __name__ == "__main__":
@@ -194,4 +213,5 @@ if __name__ == "__main__":
          Work,
          BIDR,
          Agency,
-         Disengagement])
+         Disengagement
+         ])
