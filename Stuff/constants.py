@@ -1,7 +1,7 @@
 COUNTRY = "CHINA"
 
 if COUNTRY == "CHINA":
-    CURRENCY = "¥"
+    CURRENCY = "RMB"
     WIN = 15
     BONUS = 25
     ROUNDING = True

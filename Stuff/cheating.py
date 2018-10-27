@@ -78,8 +78,14 @@ You will make predictions in 3 sets consisting of 10 trials each. There will be 
 For every trial with a correct prediction, you earn {} {}.
 
 After completing all three sets, one set will be chosen at random. You will only receive money earned in the chosen set. Therefore, if you make correct predictions in all 10 trials of a set that is later chosen, you will receive {} {}. The number of correct predictions in the two remaining sets does not affect the amount of money that you will receive in any way.
+
+
+To check whether you understand the conditions correctly, please answer the following question:
+When you make 3 correct predictions out of 10 in the first set, 5 correct predictions out of 10 in the second set, and 7 correct predictions out of 10 in the third set, and then the third set is chosen, how much money will you receive?
 """.format(WIN, CURRENCY, WIN*10, CURRENCY)
 
+wrong_answer = "{} {} is a wrong answer, the correct answer is {} {}. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN*7, CURRENCY, WIN, WIN*7, CURRENCY)
+correct_answer = "{} {} is a correct answer. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN, WIN*7, CURRENCY)
 intro_block_2 = """
 This is the end of the first set of 10 trials. If this set is chosen, you will receive {} {}. Now, the second block of 10 trials begins.
 """.format("{}", CURRENCY)
@@ -422,7 +428,65 @@ class OneFrame(Canvas):
      
 
 
+class CheatingInstructions(InstructionsFrame):
+    def __init__(self, root):
+        super().__init__(root, text = intro_block_1, height = 19, font = 16)
 
+        self.checkVar = StringVar()
+        vcmd = (self.register(self.onValidate), '%P')
+        self.entry = ttk.Entry(self, textvariable = self.checkVar, width = 10, justify = "right",
+                               font = "helvetica 16", validate = "key", validatecommand = vcmd)
+        self.entry.grid(row = 2, column = 1, sticky = E)
+        self.currencyLabel = ttk.Label(self, text = CURRENCY, font = "helvetica 16", background = "white")
+        self.currencyLabel.grid(row = 2, column = 2, sticky = W, padx = 5)
+
+        self.lowerText = Text(self, font = "helvetica 16", relief = "flat", background = "white",
+                              width = 90, height = 3, wrap = "word", highlightbackground = "white")
+        self.lowerText.grid(row = 3, column = 1, pady = 15)
+        self.lowerText["state"] = "disabled"
+        
+        self.next.grid(row = 7, column = 1)
+        self.next["state"] = "disabled"
+        self.text.grid(row = 1, column = 1, columnspan = 1)
+
+        self.rowconfigure(0, weight = 1)
+        self.rowconfigure(2, weight = 0)
+        self.rowconfigure(3, weight = 0)
+        self.rowconfigure(7, weight = 1)
+
+        self.checked = False
+        
+
+    def onValidate(self, P):
+        try:
+            if int(P) > 0:
+                self.next["state"] = "!disabled"
+            else:
+                self.next["state"] = "disabled"
+        except Exception as e:
+            self.next["state"] = "disabled"
+        return True
+
+    def nextFun(self):
+        if self.checked:
+            super().nextFun()
+        else:
+            answer = int(self.checkVar.get())
+            if answer == WIN*7:
+                text = correct_answer.format(answer)
+            else:
+                text = wrong_answer.format(answer)
+            self.lowerText["state"] = "normal"
+            self.lowerText.insert("1.0", text)
+            self.lowerText["state"] = "disabled"
+            self.next["state"] = "disabled"
+            self.checked = True
+            
+
+
+        
+
+        
 
 
 ##class EndCheating(InstructionsFrame):
@@ -446,7 +510,7 @@ if random.random() < 0.5:
 else:
     conditions.append("choice")
 
-Instructions1 = (InstructionsFrame, {"text": intro_block_1, "height": 14})
+Instructions1 = CheatingInstructions
 Instructions2 = (InstructionsFrame, {"text": intro_block_2, "height": 5, "update": ["win1"]})
 if conditions[2] == "choice":
     Instructions3 = Selection
