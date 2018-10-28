@@ -8,117 +8,149 @@ from math import ceil
 
 from common import ExperimentFrame
 from gui import GUI
-from constants import CURRENCY, BONUS, ROUNDING
+from constants import COUNTRY, CURRENCY, BONUS, ROUNDING
+
+
+
+english_level = ["No knowledge of English",
+                 "Elementary level of English (KET level)",
+                 "Low intermediate level of English (PET level)",
+                 "High intermediate level of English (FCE level)",
+                 "Advanced level of English (CAE level)",
+                 "Proficient in English (CPE level)"]
+education_levels = ["Žádné formální vzdělání",
+                    "Ukončené základní vzdělání",
+                    "Ukončené středoškolské vzdělání",
+                    "Neukončené vysokoškolské vzdělání",
+                    "Ukončené vysokoškolské vzdělání",
+                    "Ukončené doktorské vzdělání"]
+education_field = ["Nestuduji VŠ",
+                   "Ekonomie / management",
+                   "Jazyky / mezinárodní studia",
+                   "Kultura / umění",
+                   "Medicína / farmacie",
+                   "Právo / veřejná správa",
+                   "Přírodní vědy",
+                   "Technika / informatika",
+                   "Učitelství / sport",
+                   "Zemědělství / veterina",
+                   "Humanitní / společenské vědy",
+                   "Jiné"]
+working_experience = ["Yes, I have worked or I am working full-time",
+                      "Yes, I have worked or I am working part-time",
+                      "No, I have worked or I am working only as a freelancer",
+                      "No, I only had short-term holiday jobs, internships or fellowships",
+                      "No, I have not worked in any organization yet"]
+positions = ["social worker",
+             "farmer",
+             "other"]
+
+education_question = "What is the highest diploma or certificate you have obtained?"
+language_question = "What is your level of English proficiency?"
+experience_question = "Do you have a work experience in a company or an organization?"
+field_question = "If you studied university, what field did you study?"
+position_question = "What is your prefered job?"
+sex_question = "Sex: "
+age_question = "What is your age: "
+nationality_question = "Nationality:  "
 
 
 class Demographics(ExperimentFrame):
     def __init__(self, root):
         super().__init__(root)
-       
-        self.sex = StringVar()
-        self.language = StringVar()
-        self.age = StringVar()
-        self.student = StringVar()
-        self.field = StringVar()
-        self.field.set("Nestuduji VŠ")
-        self.education = StringVar()
-        self.religion = StringVar()
-
-        self.lab1 = ttk.Label(self, text = "Pohlaví:", background = "white",
-                              font = "helvetica 15")
-        self.lab1.grid(column = 1, row = 1, pady = 2, sticky = W, padx = 2)
-        self.lab2 = ttk.Label(self, text = "Věk:", background = "white",
-                              font = "helvetica 15")
-        self.lab2.grid(column = 1, row = 2, pady = 2, sticky = W, padx = 2)        
-        self.lab3 = ttk.Label(self, text = "Mateřský jazyk:  ", background = "white",
-                              font = "helvetica 15")
-        self.lab3.grid(column = 1, row = 3, pady = 2, sticky = W, padx = 2)
-        self.lab5 = ttk.Label(self, text = "Studujete VŠ?  ", background = "white",
-                              font = "helvetica 15")
-        self.lab5.grid(column = 1, row = 5, pady = 2, sticky = W, padx = 2)
-        self.lab6 = ttk.Label(self, text = "Pokud ano, jaký obor? ", background = "white",
-                              font = "helvetica 15")
-        self.lab6.grid(column = 1, row = 6, pady = 2, sticky = W, padx = 2)
-        self.lab7 = ttk.Label(self, text = "Jaké je vaše nejvyšší dosažené vzdělání? ", background = "white",
-                              font = "helvetica 15")
-        self.lab7.grid(column = 1, row = 7, pady = 2, sticky = W, padx = 2)
-        self.lab8 = ttk.Label(self, text = "Jste věřící? ", background = "white",
-                              font = "helvetica 15")
-        self.lab8.grid(column = 1, row = 8, pady = 2, sticky = W, padx = 2)
-
-        
-        self.male = ttk.Radiobutton(self, text = "muž", variable = self.sex, value = "male",
-                                    command = self.checkAllFilled)
-        self.female = ttk.Radiobutton(self, text = "žena", variable = self.sex,
-                                      value = "female", command = self.checkAllFilled)
-
-        self.czech = ttk.Radiobutton(self, text = "český", variable = self.language,
-                                     value = "czech", command = self.checkAllFilled)
-        self.slovak = ttk.Radiobutton(self, text = "slovenský", variable = self.language,
-                                     value = "slovak", command = self.checkAllFilled)
-        self.other = ttk.Radiobutton(self, text = "jiný", variable = self.language,
-                                     value = "other", command = self.checkAllFilled)
-
-        self.yes = ttk.Radiobutton(self, text = "ano", variable = self.student,
-                                     value = "student", command = self.checkAllFilled)
-        self.no = ttk.Radiobutton(self, text = "ne", variable = self.student,
-                                    value = "nostudent", command = self.checkAllFilled)
-
 
         ttk.Style().configure("TRadiobutton", background = "white", font = "helvetica 15")
         ttk.Style().configure("TButton", font = "helvetica 15")
+       
+        self.sex = StringVar()
+        self.age = StringVar()
+        self.nationality = StringVar()
+        self.language = StringVar()
+        self.education = StringVar()
+        self.field = StringVar()
+        self.field.set(education_field[0])
+        self.experience = StringVar()
+        self.position = StringVar()
+
+        self.lab1 = ttk.Label(self, text = sex_question, background = "white",
+                              font = "helvetica 15")
+        self.lab1.grid(column = 1, row = 1, pady = 2, sticky = W, padx = 2)
+        self.lab2 = ttk.Label(self, text = age_question, background = "white",
+                              font = "helvetica 15")
+        self.lab2.grid(column = 1, row = 2, pady = 2, sticky = W, padx = 2)        
+        self.lab3 = ttk.Label(self, text = nationality_question, background = "white",
+                              font = "helvetica 15")
+        self.lab3.grid(column = 1, row = 3, pady = 2, sticky = W, padx = 2)
+        self.lab4 = ttk.Label(self, text = language_question, background = "white",
+                              font = "helvetica 15")
+        self.lab4.grid(column = 1, row = 4, pady = 2, sticky = W, padx = 2)
+        self.lab5 = ttk.Label(self, text = education_question, background = "white",
+                              font = "helvetica 15")
+        self.lab5.grid(column = 1, row = 5, pady = 2, sticky = W, padx = 2)
+        self.lab6 = ttk.Label(self, text = field_question, background = "white",
+                              font = "helvetica 15")
+        self.lab6.grid(column = 1, row = 6, pady = 2, sticky = W, padx = 2)
+        self.lab7 = ttk.Label(self, text = experience_question, background = "white",
+                              font = "helvetica 15")
+        self.lab7.grid(column = 1, row = 7, pady = 2, sticky = W, padx = 2)
+        self.lab8 = ttk.Label(self, text = position_question, background = "white",
+                              font = "helvetica 15")
+        self.lab8.grid(column = 1, row = 8, pady = 2, sticky = W, padx = 2)
+   
+        self.male = ttk.Radiobutton(self, text = "male", variable = self.sex, value = "male",
+                                    command = self.checkAllFilled)
+        self.female = ttk.Radiobutton(self, text = "female", variable = self.sex,
+                                      value = "female", command = self.checkAllFilled)   
 
         self.ageCB = ttk.Combobox(self, textvariable = self.age, width = 6, font = "helvetica 14",
                                   state = "readonly")
         self.ageCB["values"] = tuple([""] + [str(i) for i in range(18, 80)])
         self.ageCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())
 
-        self.fieldCB = ttk.Combobox(self, textvariable = self.field, width = 15,
-                                    font = "helvetica 14", state = "readonly")
-        self.fieldCB["values"] = ["Nestuduji VŠ",
-                                  "Ekonomie / management",
-                                  "Jazyky / mezinárodní studia",
-                                  "Kultura / umění",
-                                  "Medicína / farmacie",
-                                  "Právo / veřejná správa",
-                                  "Přírodní vědy",
-                                  "Technika / informatika",
-                                  "Učitelství / sport",
-                                  "Zemědělství / veterina",
-                                  "Humanitní / společenské vědy",
-                                  "Jiné"]
-        self.fieldCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())
+        if COUNTRY == "CHINA":
+            nationality_name = "chinese"
+        else:
+            nationality_name = "czech"
+        self.nationalityRB = ttk.Radiobutton(self, text = nationality_name, variable = self.nationality,
+                                             value = nationality_name, command = self.checkAllFilled)
+        self.other = ttk.Radiobutton(self, text = "other", variable = self.nationality,
+                                     value = "other", command = self.checkAllFilled)
 
-        self.educationCB = ttk.Combobox(self, textvariable = self.education, width = 22,
+        self.languageCB = ttk.Combobox(self, textvariable = self.language, width = 35,
+                                       font = "helvetica 14", state = "readonly")
+        self.languageCB["values"] = english_level
+        self.languageCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled()) 
+
+        self.educationCB = ttk.Combobox(self, textvariable = self.education, width = 30,
                                     font = "helvetica 14", state = "readonly")
-        self.educationCB["values"] = ["Žádné formální vzdělání",
-                                      "Ukončené základní vzdělání",
-                                      "Ukončené středoškolské vzdělání",
-                                      "Neukončené vysokoškolské vzdělání",
-                                      "Ukončené vysokoškolské vzdělání",
-                                      "Ukončené doktorské vzdělání"]
+        self.educationCB["values"] = education_levels
         self.educationCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())
 
-        self.religionCB = ttk.Combobox(self, textvariable = self.religion, width = 40,
+        self.fieldCB = ttk.Combobox(self, textvariable = self.field, width = 25,
+                                    font = "helvetica 14", state = "readonly")
+        self.fieldCB["values"] = education_field
+        self.fieldCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())
+
+        self.experienceCB = ttk.Combobox(self, textvariable = self.experience, width = 50,
                                        font = "helvetica 14", state = "readonly")
-        self.religionCB["values"] = ["Ano, jsem aktivním členem/členkou nějaké církve nebo náboženského společenství",
-                                     "Ano, jsem pasivním členem/členkou nějaké církve nebo náboženského společenství",
-                                     "Ano, ale nejsem členem/členkou církve nebo společenství",
-                                     "Nevím",
-                                     "Ne"]
-        self.religionCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())        
+        self.experienceCB["values"] = working_experience
+        self.experienceCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())        
+
+        self.positionCB = ttk.Combobox(self, textvariable = self.position, width = 15,
+                                       font = "helvetica 14", state = "readonly")
+        self.positionCB["values"] = positions
+        self.positionCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled()) 
 
         self.male.grid(column = 2, row = 1, pady = 7, padx = 7, sticky = W)
         self.female.grid(column = 3, row = 1, pady = 7, padx = 7, sticky = W)
-        self.czech.grid(column = 2, row = 3, pady = 7, padx = 7, sticky = W)
-        self.slovak.grid(column = 3, row = 3, pady = 7, padx = 7, sticky = W)
-        self.other.grid(column = 4, row = 3, pady = 7, padx = 45, sticky = W)
         self.ageCB.grid(column = 2, row = 2, pady = 7, padx = 7, sticky = W)
-        self.yes.grid(column = 2, row = 5, pady = 7, padx = 7, sticky = W)
-        self.no.grid(column = 3, row = 5, pady = 7, padx = 7, sticky = W)    
-        self.fieldCB.grid(column = 2, columnspan = 2, row = 6, pady = 7, padx = 7, sticky = W)
-        self.educationCB.grid(column = 2, columnspan = 3, row = 7, pady = 7, padx = 7, sticky = W)
-        self.religionCB.grid(column = 2, columnspan = 3, row = 8, pady = 7, padx = 7, sticky = W)
+        self.nationalityRB.grid(column = 2, row = 3, pady = 7, padx = 7, sticky = W)
+        self.other.grid(column = 3, row = 3, pady = 7, padx = 7, sticky = W)
+        self.languageCB.grid(column = 2, columnspan = 3, row = 4, pady = 7, padx = 7, sticky = W)
+        self.educationCB.grid(column = 2, columnspan = 3, row = 5, pady = 7, padx = 7, sticky = W)
+        self.fieldCB.grid(column = 2, columnspan = 3, row = 6, pady = 7, padx = 7, sticky = W)
+        self.experienceCB.grid(column = 2, columnspan = 3, row = 7, pady = 7, padx = 7, sticky = W)
+        self.positionCB.grid(column = 2, columnspan = 2, row = 8, pady = 7, padx = 7, sticky = W)
 
         self.columnconfigure(5, weight = 1)
         self.columnconfigure(0, weight = 1)
@@ -133,8 +165,8 @@ class Demographics(ExperimentFrame):
 
 
     def checkAllFilled(self, _ = None):
-        if all([v.get() for v in [self.language, self.age, self.sex, self.field, self.student,
-                                  self.education, self.religion]]):
+        if all([v.get() for v in [self.sex, self.age, self.nationality, self.language,
+                                  self.education, self.field, self.experience, self.position]]):
             self.next["state"] = "!disabled"
 
 
@@ -172,9 +204,9 @@ class Demographics(ExperimentFrame):
     def write(self):
         self.root.texts ["gender"] = self.sex.get()
         self.file.write("Demographics\n")
-        self.file.write("\t".join([self.id, self.sex.get(), self.age.get(), self.language.get(),
-                                   self.student.get(), self.field.get(),
-                                   self.education.get()]) + "\n")
+        self.file.write("\t".join([self.id, self.sex.get(), self.age.get(), self.nationality.get(),
+                                   self.language.get(), self.education.get(), self.field.get(),
+                                   self.experience.get(), self.position.get()]) + "\n")
 
 
 if __name__ == "__main__":

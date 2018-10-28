@@ -8,13 +8,17 @@ import random
 from common import ExperimentFrame, InstructionsFrame
 from gui import GUI
 
+from constants import BONUS, CURRENCY
+
 
 
 questintro = """
-V následující části bude uvedena řada výroků.
+In the following part of the study, you will answer several series of questions about yourself, your attitudes, and opinions. This part should take about XX minutes. 
 
-Přečtěte si, prosím, postupně každý výrok a vždy se rozhodněte, jak moc s ním souhlasíte nebo nesouhlasíte.
-"""
+In order to check whether you pay attention to the questions, there are several attention checks mixed among the regular questions. You can earn an additional {} {} if you answer all of these checks correctly. 
+
+Therefore, make sure to carefully read each question.
+""".format(BONUS, CURRENCY)
 
 hexacoinstructions = """On the following pages you will find a series of statements about you.
 Please read each statement and decide how much you agree or disagree with that statement.
@@ -24,9 +28,10 @@ agencyinstructions = "Please indicate the extent to which you agree with the fol
 
 bidrinstructions = "Please read each statement and indicate how true it is."
 
-workinstructions = "How comfortable would feel about engaging in the following behaviors at work?"
+workinstructions = "How comfortable would you feel about engaging in the following behaviors at work?"
 
-attentiontext = "Select option "
+attentiontext = "In order to prove that you are paying attention, select option "
+
 
 
 
@@ -58,12 +63,15 @@ class Quest(ExperimentFrame):
             for line in f:
                 self.questions.append(line.strip())
 
-        if checks:
-            for i in range(checks):
-                self.questions.append(attentiontext + str(random.randint(1, options)))
-
         if shuffle:
             random.shuffle(self.questions)
+
+        if checks:
+            spread = len(self.questions)//checks
+            positions = [random.randint(self.perpage//2 + spread*i, spread*(i+1) - self.perpage//2) for \
+                         i in range(checks)]
+            for i in range(checks):
+                self.questions.insert(positions[i], attentiontext + str(random.randint(1, options)) + ".")
 
         ttk.Style().configure("TButton", font = "helvetica 15")
         self.next = ttk.Button(self, text = "Continue", command = self.nextFun,
@@ -203,7 +211,7 @@ class Work(Quest):
                          height = 1, options = 7, center = True)
 
 
-QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 5})
+QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 9})
 
 
 if __name__ == "__main__":

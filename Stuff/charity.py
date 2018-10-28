@@ -17,10 +17,10 @@ charitiesChina = ["The Chinese Red Cross Foundation (红十字)",
                   "China Foundation for Poverty Alleviation (中国扶贫基金会)",
                   "One Foundation (壹基金)",
                   "China Charity Federation (中华慈善总会)"]
-charitiesCzechia = ["Červený kříž",
-                    "Člověk v tísni",
-                    "Charita Česká republika",
-                    "Konto bariéry"]
+charitiesCzechia = ["Czech Red Cross (Červený kříž)",
+                    "People in Need (Člověk v tísni)",
+                    "Caritas Czech Republic (Charita Česká republika)",
+                    "Barriers Account (Konto bariéry)"]
 
 instructions = """
 The set number {} was randomly selected in the dice rolling task.
@@ -29,9 +29,11 @@ You have therefore earned {} {}.
 
 Now, you have an opportunity to give some of the earned money to a charity of your choice. 
 
-Do políčka níže uveďte částku, kterou jste ochotni přenechat jedné ze čtyř níže uvedených charitativní organizací: 
+Use the slider below to enter the amount you want to donate to one of the four charities listed below. In case you decide to donate some money, you can choose the charity by clicking the corresponding button.
 
-Peníze nashromážděné od všech účastníků výzkumu náš tým předá po konci sběru dat charitativní organizaci.
+It is completely up to you how much of your earned money you donate – you can donate any amount between 0 and the full earned amount. The donated amount will be deducted from your final payment for the study.
+
+Our research team will send all the money collected to the chosen charities after the end of the data collection.
 """
 
 donationtext = "Your donation is {} {}"
@@ -55,7 +57,7 @@ class Charity(ExperimentFrame):
         self.money = IntVar()
         self.money.set(0)
 
-        self.text = Text(self, font = "helvetica 15", relief = "flat", background = "white", height = 10,
+        self.text = Text(self, font = "helvetica 15", relief = "flat", background = "white", height = 15,
                          wrap = "word", highlightbackground = "white", width = 90)
         self.text.grid(row = 1, column = 0, columnspan = 4)
         self.text.insert("1.0", instructions.format(selected, win, CURRENCY))

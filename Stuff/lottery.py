@@ -23,14 +23,13 @@ optionsCzechia = ((50, 60, 70, 80, 90),
                   (100, 100, 100, 100, 100))
 
 instructions = """
-vyberte si loterie, co preferujete
+In the following task, you will have to make 5 separate decisions between two alternatives each. First alternative always represents a sure payoff, second alternative represents a lottery. The payoff probabilities vary across the decisions such as that the riskier alternative (i.e. lottery) will become increasingly attractive with each row. 
 
-loterie znamenaji
+After you have completed this task, your payoff will be determined. For this, one of your decisions will be selected at random (with equal probabilities) and you will get a certain payoff or the corresponding lottery will be played (based on whether you have chosen a sure payoff or a lottery). Thus, although you will have made five choices, only one eventually determines your payoff.
 
-toto je placeholder text
-
-a toto take
+Please select in each row whether you prefer a sure payoff or a lottery.
 """
+
 
 
 
@@ -41,9 +40,7 @@ class Lottery(ExperimentFrame):
     def __init__(self, root):
         super().__init__(root)
            
-
-
-        self.text = Text(self, font = "helvetica 15", relief = "flat", background = "white", height = 10,
+        self.text = Text(self, font = "helvetica 15", relief = "flat", background = "white", height = 12,
                          wrap = "word", highlightbackground = "white", width = 90)
         self.text.grid(row = 1, column = 0, columnspan = 4)
         self.text.insert("1.0", instructions)
