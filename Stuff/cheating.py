@@ -19,20 +19,21 @@ oddtext = "Odd (1,3,5)"
 eventext = "Even (2,4,6)"
 rolltext = "Roll a die"
 correcttext = "Predicted correctly"
-incorrecttext = "Predicted incorrectly"    
+incorrecttext = "Predicted incorrectly"
+predictiontext = "I made a prediction."
 
-treatmenttext = '''Round {}
+treatmenttext = '''Trial {}
 
-Decide whether an odd or even number will be rolled on a die in this trial and remember your choice.
+You have to decide whether an odd or even number will be rolled on a die in this trial. Now, please remember your prediction and then click on the button to roll the die.
 
 Press "{}".
 '''.format("{}", rolltext)
 
 treatmenttext2 = "Select whether you predicted correctly and earned {} {} or whether you predicted incorrectly and earned nothing in this trial.".format(WIN, CURRENCY)
 
-controltext = """Round {}
+controltext = """Trial {}
 
-Decide whether an odd or even number will be rolled on a die in this trial.
+You have to decide whether an odd or even number will be rolled on a die in this trial. Now, select your prediction and then click on the button to roll the die.
 """
 
 controltext2 = "In this trial, your prediction was {}"
@@ -43,13 +44,13 @@ choicetext = """This is the end of the second set of 10 trials. If this set is c
 
 As you have noticed, there were two versions of the task:
 
-Version BEFORE, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
-Version AFTER, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made and you see its result.
+Version “BEFORE”, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
+Version “AFTER”, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made and you see its result.
 
 Now, the last set of 10 trials is about to begin. You can choose which version of the task you want for the last set:
 - BEFORE version  
 - AFTER version
-- select one of the two version at random (that is, you will have 50% chance to get the BEFORE version and 50% chance to get the AFTER version of the task).
+- select one of the two versions at random (that is, you will have 50% chance to get the BEFORE version and 50% chance to get the AFTER version of the task).
 """.format("{}", CURRENCY)
 
 # buttons
@@ -61,8 +62,8 @@ nochoicetext = """This is the end of the second set of 10 trials. If this set is
 
 As you have noticed, there were two versions of the task:
 
-Version BEFORE, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
-Version AFTER, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made and you see its result.
+Version “BEFORE”, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
+Version “AFTER”, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made and you see its result.
 
 Now, the last set of 10 trials is about to begin. For the last set, you were randomly assigned the {} of the task.
 """.format("{}", CURRENCY, "{}")
@@ -79,13 +80,18 @@ For every trial with a correct prediction, you earn {} {}.
 
 After completing all three sets, one set will be chosen at random. You will only receive money earned in the chosen set. Therefore, if you make correct predictions in all 10 trials of a set that is later chosen, you will receive {} {}. The number of correct predictions in the two remaining sets does not affect the amount of money that you will receive in any way.
 
-
 To check whether you understand the conditions correctly, please answer the following question:
 When you make 3 correct predictions out of 10 in the first set, 5 correct predictions out of 10 in the second set, and 7 correct predictions out of 10 in the third set, and then the third set is chosen, how much money will you receive?
 """.format(WIN, CURRENCY, WIN*10, CURRENCY)
 
 wrong_answer = "{} {} is a wrong answer, the correct answer is {} {}. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN*7, CURRENCY, WIN, WIN*7, CURRENCY)
 correct_answer = "{} {} is a correct answer. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN, WIN*7, CURRENCY)
+
+second_check_question = "Before you begin, write down how many correct predictions you believe you will make and how much money you will earn in the first set."
+prediction_label = "correct predictions"
+wrong_trials = "There are only 10 trials in one set!"
+wrong_money = "You earn {} {} for each correct prediction!".format(WIN, CURRENCY)
+
 intro_block_2 = """
 This is the end of the first set of 10 trials. If this set is chosen, you will receive {} {}. Now, the second block of 10 trials begins.
 """.format("{}", CURRENCY)
@@ -93,6 +99,7 @@ This is the end of the first set of 10 trials. If this set is chosen, you will r
 endtext = """This is the end of the last set of 10 trials. If this set is chosen, you will receive {} {}.
 
 This is the end of the dice rolling task.
+
 """.format("{}", CURRENCY)
 
 debrieftext = """
@@ -100,7 +107,7 @@ As was mentioned before, the dice rolling task had two versions:
 
 Version BEFORE, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
 
-Version AFTER, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made any you see its result.
+Version AFTER, in which you state whether your prediction was correct or incorrect and how much you earned after the roll of a die is made and you see its result.
 
 Please rate how much do you agree or disagree with each of the following characterization for each version of the task.
 """
@@ -114,7 +121,7 @@ debriefscale4 = "completely agree"
 
 debriefdimensions = ["... required attention",
                      "... required logical thinking",
-                     "... enabled immoral behavior",
+                     "... enabled cheating",
                      "... made immoral behavior acceptable"]
 
 
@@ -128,7 +135,7 @@ class Cheating(ExperimentFrame):
 
         #######################
         # adjustable parameters
-        self.trials = 10
+        self.trials = 1
         self.pause_after_roll = 0.5
         self.pause_before_trial = 0.2
         self.displayNum = self.createDots # self.createDots or self.createText
@@ -145,7 +152,7 @@ class Cheating(ExperimentFrame):
 
         self.file.write("Cheating {}\n".format(block))
 
-        self.upperText = Text(self, height = 8, width = 80, relief = "flat", font = "helvetica 15",
+        self.upperText = Text(self, height = 5, width = 80, relief = "flat", font = "helvetica 15",
                               wrap = "word")
         self.upperButtonFrame = Canvas(self, highlightbackground = "white", highlightcolor = "white",
                                        background = "white", height = 100)
@@ -213,29 +220,49 @@ class Cheating(ExperimentFrame):
     def upperPart(self):
         self.upperText["state"] = "normal"
         if "treatment" in self.condition:
+            ttk.Style().configure("TCheckbutton", background = "white", font = "helvetica 15")
+            self.predictionVar = BooleanVar()
+            self.predictionVar.set(False)
             self.upperText.insert("1.0", treatmenttext.format(self.currentTrial))
-            self.rollButton = ttk.Button(self.upperButtonFrame, text = rolltext,
-                                         command = self.roll)
-            self.rollButton.grid(row = 0, column = 1)
+            self.predictedCB = ttk.Checkbutton(self.upperButtonFrame, text = predictiontext,
+                                               command = self.checkbuttoned, variable = self.predictionVar,
+                                               onvalue = True, offvalue = False)
+            self.predictedCB.grid(row = 0, column = 1, pady = 15)
         elif "control" in self.condition:
+            ttk.Style().configure("TRadiobutton", background = "white", font = "helvetica 15")
+            self.predictionVar = StringVar()
             self.upperText.insert("1.0", controltext.format(self.currentTrial))
-            self.evenButton = ttk.Button(self.upperButtonFrame, text = eventext,
-                                         command = lambda: self.roll("even"))
-            self.oddButton = ttk.Button(self.upperButtonFrame, text = oddtext,
-                                        command = lambda: self.roll("odd"))
-            self.evenButton.grid(row = 0, column = 0, padx = 30)
-            self.oddButton.grid(row = 0, column = 2, padx = 30)
+            self.evenButton = ttk.Radiobutton(self.upperButtonFrame, text = eventext, value = "even",
+                                              variable = self.predictionVar, command = self.checked)
+            self.oddButton = ttk.Radiobutton(self.upperButtonFrame, text = oddtext, value = "odd",
+                                             variable = self.predictionVar, command = self.checked)
+            self.evenButton.grid(row = 0, column = 2, padx = 10, pady = 15)
+            self.oddButton.grid(row = 0, column = 0, padx = 10, pady = 15)
+
+        self.rollButton = ttk.Button(self.upperButtonFrame, text = rolltext, command = self.roll,
+                                     state = "disabled")
+        self.rollButton.grid(row = 1, column = 1)
         self.upperText["state"] = "disabled"
+
+
+    def checked(self):
+        self.rollButton["state"] = "!disabled"
+
+    def checkbuttoned(self):
+        self.rollButton["state"] = "!disabled"
+        self.predictedCB["state"] = "disabled"
 
 
     def bottomPart(self):
         self.bottomText["state"] = "normal"
         if "treatment" in self.condition:
             self.bottomText.insert("1.0", treatmenttext2)
+            ttk.Style().configure("Green.TButton", foreground = "green")
+            ttk.Style().configure("Red.TButton", foreground = "red")
             self.winButton = ttk.Button(self.bottomButtonFrame, text = correcttext,
-                                         command = lambda: self.answer("win"), width = 18)
+                                        command = lambda: self.answer("win"), width = 18, style = "Green.TButton")
             self.lossButton = ttk.Button(self.bottomButtonFrame, text = incorrecttext,
-                                        command = lambda: self.answer("loss"), width= 18)
+                                         command = lambda: self.answer("loss"), width= 18, style = "Red.TButton")
             self.winButton.grid(row = 0, column = 0, padx = 30)
             self.lossButton.grid(row = 0, column = 2, padx = 30)
         elif "control" in self.condition:
@@ -251,13 +278,13 @@ class Cheating(ExperimentFrame):
         self.bottomText["state"] = "disabled"
 
 
-    def roll(self, response = "NA"):
+    def roll(self):
         self.firstResponse = perf_counter()
         if "treatment" in self.condition:
-            self.rollButton["state"] = "disabled"
+            self.response = "NA"    
         else:
-            self.evenButton["state"] = "disabled"
-            self.oddButton["state"] = "disabled"
+            self.response = self.predictionVar.get()
+        self.rollButton["state"] = "disabled"
         self.die.create_rectangle((5, 5, self.diesize - 5, self.diesize - 5),
                                   fill = "white", tag = "die", outline = "black", width = 5)
         # fake rolling
@@ -269,7 +296,6 @@ class Cheating(ExperimentFrame):
                 self.die.delete("dots")
         self.currentRoll = random.randint(1, 6)
         self.displayNum(self.diesize/2, self.diesize/2, self.currentRoll)
-        self.response = response
         self.update()
         sleep(self.pause_after_roll)
         self.beforeSecondResponse = perf_counter()
@@ -297,7 +323,7 @@ class Cheating(ExperimentFrame):
     def answer(self, answer = "NA"):
         t = perf_counter()
         if answer == "win":
-                self.root.wins[self.blockNumber - 1] += 1
+            self.root.wins[self.blockNumber - 1] += 1
         self.responses.append([self.blockNumber, self.currentTrial, self.condition,
                                self.currentRoll, self.response,
                                answer, t - self.time, self.firstResponse - self.time,
@@ -433,17 +459,40 @@ class CheatingInstructions(InstructionsFrame):
         super().__init__(root, text = intro_block_1, height = 19, font = 16)
 
         self.checkVar = StringVar()
-        vcmd = (self.register(self.onValidate), '%P')
-        self.entry = ttk.Entry(self, textvariable = self.checkVar, width = 10, justify = "right",
-                               font = "helvetica 16", validate = "key", validatecommand = vcmd)
-        self.entry.grid(row = 2, column = 1, sticky = E)
-        self.currencyLabel = ttk.Label(self, text = CURRENCY, font = "helvetica 16", background = "white")
-        self.currencyLabel.grid(row = 2, column = 2, sticky = W, padx = 5)
+        self.vcmd = (self.register(self.onValidate), '%P')
+        self.checkFrame = Canvas(self, background = "white", highlightbackground = "white",
+                                 highlightcolor = "white")
+        self.checkFrame.grid(row = 2, column = 1)
+        self.entry = ttk.Entry(self.checkFrame, textvariable = self.checkVar, width = 10, justify = "right",
+                               font = "helvetica 16", validate = "key", validatecommand = self.vcmd)
+        self.entry.grid(row = 2, column = 1, padx = 6)
+        self.currencyLabel = ttk.Label(self.checkFrame, text = CURRENCY, font = "helvetica 16",
+                                       background = "white")
+        self.currencyLabel.grid(row = 2, column = 2, sticky = NSEW)
 
         self.lowerText = Text(self, font = "helvetica 16", relief = "flat", background = "white",
                               width = 90, height = 3, wrap = "word", highlightbackground = "white")
         self.lowerText.grid(row = 3, column = 1, pady = 15)
         self.lowerText["state"] = "disabled"
+
+        self.bottomText = Text(self, font = "helvetica 16", relief = "flat", background = "white",
+                               width = 90, height = 2, wrap = "word", highlightbackground = "white",
+                               state = "disabled")
+        self.bottomText.grid(row = 4, column = 1)
+        self.bottomAnswers = Canvas(self, height = 40, background = "white", highlightbackground = "white",
+                                    highlightcolor = "white")
+        self.bottomAnswers.grid(row = 5, column = 1)
+        self.predictionsLab = ttk.Label(self.bottomAnswers, text = prediction_label, font = "helvetica 16",
+                                        background = "white", foreground = "white")
+        self.predictionsLab.grid(row = 0, column = 1, sticky = NSEW)
+        self.rewardLab = ttk.Label(self.bottomAnswers, text = CURRENCY, font = "helvetica 16",
+                                   background = "white", foreground = "white")
+        self.rewardLab.grid(row = 1, column = 1, sticky = NSEW, pady = 8)
+        self.bottomMistakes = Text(self, font = "helvetica 16", relief = "flat", background = "white",
+                                   width = 90, height = 1, wrap = "word", highlightbackground = "white",
+                                   state = "disabled", foreground = "red")
+        self.bottomMistakes.tag_config("centered", justify = "center")
+        self.bottomMistakes.grid(row = 6, column = 1, pady = 10)
         
         self.next.grid(row = 7, column = 1)
         self.next["state"] = "disabled"
@@ -453,22 +502,41 @@ class CheatingInstructions(InstructionsFrame):
         self.rowconfigure(2, weight = 0)
         self.rowconfigure(3, weight = 0)
         self.rowconfigure(7, weight = 1)
+        self.rowconfigure(8, weight = 2)
 
         self.checked = False
         
 
-    def onValidate(self, P):
+    def onValidate(self, P, entry = None):
         try:
             if int(P) > 0:
-                self.next["state"] = "!disabled"
+                if self.checked:
+                    if (entry == "predictions" and int(self.rewardVar.get()) > 0) or \
+                       (entry == "reward" and int(self.predictionVar.get()) > 0):
+                        self.next["state"] = "!disabled"                        
+                else:
+                    self.next["state"] = "!disabled"
             else:
                 self.next["state"] = "disabled"
         except Exception as e:
             self.next["state"] = "disabled"
         return True
+    
 
     def nextFun(self):
         if self.checked:
+            if int(self.predictionVar.get()) > 10:
+                self.bottomMistakes["state"] = "normal"
+                self.bottomMistakes.delete("1.0", "end")
+                self.bottomMistakes.insert("1.0", wrong_trials, "centered")
+                self.bottomMistakes["state"] = "disabled"
+                return
+            elif int(self.predictionVar.get())*WIN != int(self.rewardVar.get()):
+                self.bottomMistakes["state"] = "normal"
+                self.bottomMistakes.delete("1.0", "end")
+                self.bottomMistakes.insert("1.0", wrong_money, "centered")
+                self.bottomMistakes["state"] = "disabled"
+                return                
             super().nextFun()
         else:
             answer = int(self.checkVar.get())
@@ -481,13 +549,26 @@ class CheatingInstructions(InstructionsFrame):
             self.lowerText["state"] = "disabled"
             self.next["state"] = "disabled"
             self.checked = True
-            
+            self.bottomText["state"] = "normal"
+            self.bottomText.insert("1.0", second_check_question)
+            self.bottomText["state"] = "disabled"
+            self.predictionVar = StringVar()
+            self.rewardVar = StringVar()
+            self.vcmd2 = (self.register(self.onValidate), '%P', "predictions")
+            self.vcmd3 = (self.register(self.onValidate), '%P', "reward")
+            self.predictionsEntry = ttk.Entry(self.bottomAnswers, textvariable = self.predictionVar, width = 10,
+                                              justify = "right", font = "helvetica 16", validate = "key",
+                                              validatecommand = self.vcmd2)
+            self.rewardEntry = ttk.Entry(self.bottomAnswers, textvariable = self.rewardVar, width = 10,
+                                         justify = "right", font = "helvetica 16", validate = "key",
+                                         validatecommand = self.vcmd3)
+            self.predictionsLab["foreground"] = "black"
+            self.rewardLab["foreground"] = "black"
+            self.predictionsEntry.grid(row = 0, column = 0, padx = 6)
+            self.rewardEntry.grid(row = 1, column = 0, padx = 6)
 
 
         
-
-        
-
 
 ##class EndCheating(InstructionsFrame):
 ##    def __init__(self, root):
