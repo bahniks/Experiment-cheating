@@ -25,8 +25,6 @@ In case you have any questions or you encounter any technical difficulties durin
 Please, do not continue with the study until you are asked to by a research assistant. 
 """
 
-
-
 czechending = """
 In the dice rolling task, you earned {} {}. From this amount, you decided to donate {} {} to a charity. In the lottery, you earned {} {}. You have{} correctly answered all attention check items and therefore {} an additional {} {}. Therefore, your reward for the study is {} {}. To this amount, we add 15% tax paid from all wages by an employer and round up the final sum to the nearest 100 Kč. On your contract, you will therefore found the amount {} {}. Please write down this amount together with the number of your seat – {} on a piece of paper you find on your desk. 
 
@@ -46,6 +44,8 @@ CEBEX/PLESS labs
            "{}", CURRENCY, # celkem pred zaokrouhlenim
            "{}", CURRENCY, # celkem po zaokrouhleni
            "{}") # seat   
+  
+
 
 
 chinaending = """
@@ -66,6 +66,7 @@ Experimental Economics Lab
            BONUS, CURRENCY, # attention check
            "{}", CURRENCY, # celkem
            "{}") # seat
+
 
 
 ################################################################################

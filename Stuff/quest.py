@@ -11,7 +11,8 @@ from gui import GUI
 from constants import BONUS, CURRENCY
 
 
-
+################################################################################
+# TEXTS
 questintro = """
 In the following part of the study, you will answer several series of questions about yourself, your attitudes, and opinions. This part should take about XX minutes. 
 
@@ -32,6 +33,7 @@ workinstructions = "How comfortable would you feel about engaging in the followi
 
 attentiontext = "In order to prove that you are paying attention, select option "
 
+################################################################################
 
 
 

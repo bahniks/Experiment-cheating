@@ -11,6 +11,9 @@ from gui import GUI
 from constants import COUNTRY, CURRENCY, BONUS, ROUNDING, EXCHANGE_RATE
 
 
+##################################################################################################################
+# TEXTS #
+#########
 
 english_level = ["No knowledge of English",
                  "Elementary level of English (KET level)",
@@ -61,6 +64,8 @@ position_question = "What is your preferred profession (select the closest):"
 sex_question = "Sex: "
 age_question = "What is your age: "
 nationality_question = "Nationality:  "
+
+##################################################################################################################
 
 
 class Demographics(ExperimentFrame):
@@ -221,7 +226,7 @@ class Demographics(ExperimentFrame):
                 infile.write("lottery: " + str(lottery) + CURRENCY + "\n")
                 infile.write("bonus: " + str(bonus) + CURRENCY)
             self.file.write("Winnings\n")
-            self.file.write(self.id + "\t" + reward + "\t" + charity + "\t" + donation + "\n\n")
+            self.file.write(self.id + "\t" + str(reward) + "\t" + charity + "\t" + str(donation) + "\n\n")
         
 
     def write(self):

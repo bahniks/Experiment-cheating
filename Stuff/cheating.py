@@ -19,7 +19,7 @@ oddtext = "Odd (1,3,5)"
 eventext = "Even (2,4,6)"
 rolltext = "Roll a die"
 correcttext = "Predicted correctly"
-incorrecttext = "Predicted incorrectly"
+incorrecttext = "Predicted incorrectly"    
 predictiontext = "I made a prediction."
 
 treatmenttext = '''Trial {}
@@ -87,7 +87,7 @@ When you make 3 correct predictions out of 10 in the first set, 5 correct predic
 wrong_answer = "{} {} is a wrong answer, the correct answer is {} {}. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN*7, CURRENCY, WIN, WIN*7, CURRENCY)
 correct_answer = "{} {} is a correct answer. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN, WIN*7, CURRENCY)
 
-second_check_question = "Before you begin, write down how many correct predictions you believe you will make and how much money you will earn in the first set."
+second_check_question = "Before you begin, write down how many correct predictions you believe you will make and how much money you will earn in the chosen set for which you will earn money."
 prediction_label = "correct predictions"
 wrong_trials = "There are only 10 trials in one set!"
 wrong_money = "You earn {} {} for each correct prediction!".format(WIN, CURRENCY)
@@ -103,7 +103,7 @@ This is the end of the dice rolling task.
 """.format("{}", CURRENCY)
 
 debrieftext = """
-As was mentioned before, the dice rolling task had two versions:
+As was described before, the dice rolling task had two versions:
 
 Version BEFORE, in which predictions are stated before the roll of a die. Afterwards, you see the outcome of the roll and learn whether your prediction was correct or not and how much you earned.
 
@@ -123,6 +123,7 @@ debriefdimensions = ["... required attention",
                      "... required logical thinking",
                      "... enabled cheating",
                      "... made overreporting correct predictions acceptable"]
+
 
 
 
@@ -448,9 +449,10 @@ class OneFrame(Canvas):
             return True             
 
     def write(self):
-        for measure in self.measures:
+        for num, measure in enumerate(self.measures):
             self.file.write(str(self.answers.index(measure.answer.get()) + 1))
-            self.file.write("\t")
+            if num != len(self.measures) - 1:
+                self.file.write("\t")
      
 
 
@@ -573,19 +575,6 @@ class CheatingInstructions(InstructionsFrame):
         self.file.write(self.id + "\t" + self.predictionVar.get() + "\t" + self.rewardVar.get() + "\n\n")
         
 
-
-        
-
-##class EndCheating(InstructionsFrame):
-##    def __init__(self, root):
-##        block = random.randint(1, 3)
-##        text = endtext.format(root.wins[2] * WIN, block, root.wins[block-1] * WIN)
-##        super().__init__(root, text = text)
-##        self.file.write("Win cheating\n" + self.id + "\t")
-##        self.file.write(str(block) + "\t" + str(root.wins[block-1] * WIN))
-##        self.file.write("\n\n")
-            
-
         
 conditions = ["treatment", "control"]
 random.shuffle(conditions)
@@ -615,12 +604,12 @@ EndCheating = (InstructionsFrame, {"text": endtext, "height": 5, "update": ["win
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([Instructions1,
-         BlockOne,
-         Instructions2,
-         BlockTwo,
-         Instructions3,
-         BlockThree,
-         EndCheating,
+    GUI([#Instructions1,
+         #BlockOne,
+         #Instructions2,
+         #BlockTwo,
+         #Instructions3,
+         #BlockThree,
+         #EndCheating,
          DebriefCheating
          ])

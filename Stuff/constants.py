@@ -2,13 +2,14 @@ COUNTRY = "CZECHIA"
 
 if COUNTRY == "CHINA":
     CURRENCY = "RMB"
-    WIN = 15
-    BONUS = 25
-    ROUNDING = True
+    WIN = 10
+    BONUS = 15
+    ROUNDING = False
 elif COUNTRY == "CZECHIA":
     CURRENCY = "Kč"
-    WIN = 50
+    WIN = 35
     BONUS = 50
     ROUNDING = True
 
 EXCHANGE_RATE = 3.26
+
