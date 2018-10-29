@@ -7,7 +7,7 @@ import random
 
 from collections import OrderedDict
 
-from common import ExperimentFrame
+from common import ExperimentFrame, InstructionsFrame
 from gui import GUI
 from constants import CURRENCY, WIN, COUNTRY
 
@@ -15,10 +15,10 @@ from constants import CURRENCY, WIN, COUNTRY
 ################################################################################
 # TEXTS
 
-optionsChina = ((50, 60, 70, 80, 90),
+optionsChina = ((12, 13, 14, 15, 16),
                 (30, 40, 50, 60, 70),
-                (100, 100, 100, 100, 100))
-optionsCzechia = ((50, 60, 70, 80, 90),
+                (30, 30, 30, 30, 30))
+optionsCzechia = ((42, 44, 46, 48, 50),
                   (30, 40, 50, 60, 70),
                   (100, 100, 100, 100, 100))
 
@@ -30,7 +30,14 @@ After you have completed this task, your payoff will be determined. For this, on
 Please select in each row whether you prefer a sure payoff or a lottery.
 """
 
+wintext = """
+Your decision number {} was selected randomly.
 
+{}
+"""
+
+sure = "Because you have chosen a sure payoff, you win {} {}."
+risky = "Because you have chosen a lottery, the draw has taken place and you win {} {}."
 
 
 ################################################################################
@@ -106,6 +113,20 @@ class Lottery(ExperimentFrame):
         self.file.write("\t".join([self.id] + [var.get() for var in self.variables.values()]) + "\n")
 
 
+
+class LotteryWin(InstructionsFrame):
+    def __init__(self, root):
+        self.root = root
+        if self.root.texts["lottery_chosen"] == "risky":
+            append = risky
+        else:
+            append = sure
+        text = wintext.format(self.root.texts["lottery_selected"],
+                              append.format(self.root.texts["lottery_win"], CURRENCY))       
+        super().__init__(root, text = text, proceed = True, height = 5)  
+
+
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([Lottery])
+    GUI([Lottery,
+         LotteryWin])

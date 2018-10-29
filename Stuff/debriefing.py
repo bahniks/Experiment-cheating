@@ -19,10 +19,11 @@ from gui import GUI
 # TEXTS #
 #########
 
-q1 = "V této poslední části nás zajímá, co si myslíte o průběhu experimentu. Napište v pár větách svůj názor."
-q2 = "Máte nějaké připomínky k průběhu experimentu? Ke srozumitelnosti instrukcí, k přehlednosti uživatelského rozhraní, k chování experimentátorů, atp.? Co byste udělali jinak?"
-q3 = "Co myslíte, že bylo cílem úkolů s předpověďmi, zda padne lichý či sudý počet bodů na kostce? Uveďte, proč jste se chovali v experimentu tak, jak jste se chovali."
-q4 = "Co myslíte, že bylo cílem úkolu s možností darovat peníze charitě? Uveďte, proč jste se chovali v experimentu tak, jak jste se chovali."
+q1 = "In this and the following part, we are interested in finding out your opinion about the experiment. Please write down your opinion in a few sentences."
+q2 = "Do you have any comments about the course of the experiment? Were the instructions clear? Was the user interface easy to follow? Do you have any comments regarding the behavior of experimenters? Is there anything you would do differently?"
+q3 = "In your opinion, what was the aim of the task where you had to predict whether odd or even number would be rolled on a die? Please state, why you chose in this task the way you did."
+q4 = "In your opinion, what was the aim of the task, where you had the option to donate money to a charity? Please state, why you chose in this task the way you did."
+q5 = "Do you think it would be immoral to overreport the number of correctly predicted die rolls if given the chance in the dice rolling task in order to earn more money from the experimenter? Please also provide the reason for your answer."
 
 ##################################################################################################################
 
@@ -34,23 +35,25 @@ class Debriefing(ExperimentFrame):
 
         self.file.write("Debriefing\n")
 
-        self.question1 = Question(self, q1, alines = 6)
-        self.question2 = Question(self, q2, alines = 6)
-        self.question3 = Question(self, q3, alines = 6)
-        self.question4 = Question(self, q4, alines = 6)
+        self.question1 = Question(self, q1, alines = 4)
+        self.question2 = Question(self, q2, alines = 4, qlines = 3)
+        self.question3 = Question(self, q3, alines = 4)
+        self.question4 = Question(self, q4, alines = 4)
+        self.question5 = Question(self, q5, alines = 4, qlines = 3)
 
         self.question1.grid(row = 1, column = 1, sticky = "w")
         self.question2.grid(row = 2, column = 1, sticky = "w")
         self.question3.grid(row = 3, column = 1, sticky = "w")
         self.question4.grid(row = 4, column = 1, sticky = "w")
+        self.question5.grid(row = 5, column = 1, sticky = "w")
         
         ttk.Style().configure("TButton", font = "helvetica 15")
         self.next = ttk.Button(self, text = "Continue", command = self.nextFun)
-        self.next.grid(row = 5, column = 1)
+        self.next.grid(row = 6, column = 1)
 
         self.warning = ttk.Label(self, text = "Please answer all questions.",
                                  background = "white", font = "helvetica 15", foreground = "white")
-        self.warning.grid(row = 6, column = 1)
+        self.warning.grid(row = 7, column = 1)
 
         self.columnconfigure(0, weight = 1)
         self.columnconfigure(2, weight = 1)
@@ -61,12 +64,13 @@ class Debriefing(ExperimentFrame):
         self.rowconfigure(4, weight = 1)
         self.rowconfigure(5, weight = 1)
         self.rowconfigure(6, weight = 1)
-        self.rowconfigure(7, weight = 2)
+        self.rowconfigure(7, weight = 1)
+        self.rowconfigure(8, weight = 2)
 
         
     def check(self):
         return self.question1.check() and self.question2.check() and \
-               self.question3.check() and self.question4.check()
+               self.question3.check() and self.question4.check() and self.question5.check()
 
     def back(self):
         self.warning.config(foreground = "red")
@@ -79,8 +83,9 @@ class Debriefing(ExperimentFrame):
         self.file.write("\t")
         self.question3.write(newline = False)
         self.file.write("\t")
-        self.question4.write()
-
+        self.question4.write(newline = False)
+        self.file.write("\t")
+        self.question5.write()
 
        
 class Question(Canvas):
@@ -103,7 +108,7 @@ class Question(Canvas):
 
         self.field = Text(self, width = int(width*1.2), wrap = "word", font = "helvetica 13",
                           height = alines, relief = "solid")
-        self.field.grid(column = 0, row = 1, pady = 10)
+        self.field.grid(column = 0, row = 1, pady = 6)
 
         self.columnconfigure(0, weight = 1)
 
@@ -112,7 +117,7 @@ class Question(Canvas):
         return self.field.get("1.0", "end").strip()
 
     def write(self, newline = True):
-        self.root.file.write(self.field.get("1.0", "end").replace("\n", "\t"))
+        self.root.file.write(self.field.get("1.0", "end").replace("\n", "  ").replace("\t", " "))
         if newline:
             self.root.file.write("\n")
 

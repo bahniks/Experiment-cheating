@@ -168,7 +168,7 @@ class Likert(Canvas):
         if attentiontext in self.text:
             if not "attention_checks" in self.root.root.texts:
                 self.root.root.texts["attention_checks"] = 0
-            if self.answer.get() != self.text[-1]:
+            if self.answer.get() != self.text[-2]:
                 self.root.root.texts["attention_checks"] += 1
         else:
             ans = "{}\t{}\t{}\n".format(self.short, self.answer.get(), self.text.replace("\t", " "))

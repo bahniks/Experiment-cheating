@@ -8,7 +8,7 @@ from math import ceil
 
 from common import ExperimentFrame
 from gui import GUI
-from constants import COUNTRY, CURRENCY, BONUS, ROUNDING
+from constants import COUNTRY, CURRENCY, BONUS, ROUNDING, EXCHANGE_RATE
 
 
 
@@ -18,38 +18,46 @@ english_level = ["No knowledge of English",
                  "High intermediate level of English (FCE level)",
                  "Advanced level of English (CAE level)",
                  "Proficient in English (CPE level)"]
-education_levels = ["Žádné formální vzdělání",
-                    "Ukončené základní vzdělání",
-                    "Ukončené středoškolské vzdělání",
-                    "Neukončené vysokoškolské vzdělání",
-                    "Ukončené vysokoškolské vzdělání",
-                    "Ukončené doktorské vzdělání"]
-education_field = ["Nestuduji VŠ",
-                   "Ekonomie / management",
-                   "Jazyky / mezinárodní studia",
-                   "Kultura / umění",
-                   "Medicína / farmacie",
-                   "Právo / veřejná správa",
-                   "Přírodní vědy",
-                   "Technika / informatika",
-                   "Učitelství / sport",
-                   "Zemědělství / veterina",
-                   "Humanitní / společenské vědy",
-                   "Jiné"]
+education_levels = ["None",
+                    "Primary school",
+                    "Middle school",
+                    "High school",
+                    "Technical high school",
+                    "University",
+                    "Technical college",
+                    "Master degree",
+                    "Doctoral degree"]
+education_field = ["I have not studied university",
+                   "Natural and Physical Sciences",
+                   "Information Technology",
+                   "Engineering and Related Technologies",
+                   "Architecture and Building",
+                   "Agriculture, Environmental and Related Studies",
+                   "Health",
+                   "Education",
+                   "Management and Commerce",
+                   "Society and Culture",
+                   "Creative Arts",
+                   "Food, Hospitality and Personal Services",
+                   "Other"]
 working_experience = ["Yes, I have worked or I am working full-time",
                       "Yes, I have worked or I am working part-time",
                       "No, I have worked or I am working only as a freelancer",
                       "No, I only had short-term holiday jobs, internships or fellowships",
                       "No, I have not worked in any organization yet"]
-positions = ["social worker",
-             "farmer",
-             "other"]
+positions = ["social worker", "farmer", "therapist/psychologist", "artist",
+             "IT engineer", "scientist", "civil servant", "craftsmen/craftswomen",
+             'lawyer', 'media personality (TV, radio, Youtube etc.)', 'journalist',
+             'police officer', 'clergy', 'salesperson', 'advertiser', 'investment banker',
+             'lobbyist', 'politician', 'management consultant', 'non-profit employee',
+             'author (novelist, writer etc.)', 'accountant', 'auditor', 'physician', 'judge',
+             'university professor', 'teacher', 'nurse', 'engineer']
 
 education_question = "What is the highest diploma or certificate you have obtained?"
 language_question = "What is your level of English proficiency?"
 experience_question = "Do you have a work experience in a company or an organization?"
-field_question = "If you studied university, what field did you study?"
-position_question = "What is your prefered job?"
+field_question = "If you have studied a university, what field have you studied?"
+position_question = "What is your preferred profession (select the closest):"
 sex_question = "Sex: "
 age_question = "What is your age: "
 nationality_question = "Nationality:  "
@@ -136,7 +144,7 @@ class Demographics(ExperimentFrame):
         self.experienceCB["values"] = working_experience
         self.experienceCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())        
 
-        self.positionCB = ttk.Combobox(self, textvariable = self.position, width = 15,
+        self.positionCB = ttk.Combobox(self, textvariable = self.position, width = 25,
                                        font = "helvetica 14", state = "readonly")
         self.positionCB["values"] = positions
         self.positionCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled()) 
@@ -159,7 +167,7 @@ class Demographics(ExperimentFrame):
 
         self.writeWinnings()
 
-        self.next = ttk.Button(self, text = "Pokračovat", command = self.nextFun,
+        self.next = ttk.Button(self, text = "Continue", command = self.nextFun,
                                state = "disabled")
         self.next.grid(row = 11, column = 1, pady = 15, columnspan = 3)
 
@@ -181,24 +189,39 @@ class Demographics(ExperimentFrame):
         else:
             directory = os.path.dirname(self.root.outputfile)
             station = "UNKNOWN"
+        self.root.texts["station"] = station
         filename = os.path.splitext(os.path.basename(self.root.outputfile))[0]
         output = os.path.join(directory, filename + "_STATION_" + str(station) + ".txt")
         if all([key in self.root.texts for key in ["dice", "charity", "donation",
                                                    "lottery_win", "attention_checks"]]):
+            if self.root.texts["attention_checks"] > 0:
+                self.root.texts["attention1"] = " not"
+                self.root.texts["attention2"] = "did not earn"
+            else:
+                self.root.texts["attention1"] = ""
+                self.root.texts["attention2"] = "earned"
             dice = self.root.texts["dice"]
             charity = self.root.texts["charity"]
             donation = self.root.texts["donation"]
             lottery = self.root.texts["lottery_win"]
             bonus = 0 if self.root.texts["attention_checks"] else BONUS
-            with open(output, mode = "w", encoding="utf-8") as infile:
+            with open(output, mode = "w", encoding = "utf-8") as infile:
                 reward = dice + lottery + bonus - donation
+                self.root.texts["reward"] = reward
                 if ROUNDING:
                     reward = ceil((reward)/85)*100
-                infile.write("reward: " + str(reward) + CURRENCY + "\n\n")
+                    self.root.texts["rounded_reward"] = reward
+                if COUNTRY == "CZECHIA":
+                    infile.write("reward: " + str(reward) + CURRENCY + "\n\n")
+                else:
+                    infile.write("reward: " + str(reward) + CURRENCY + "(" + \
+                                 str( round(reward/EXCHANGE_RATE)) + "CZK)" "\n\n")
                 infile.write(charity + ": " + str(donation) + CURRENCY + "\n\n")
                 infile.write("dice: " + str(dice) + CURRENCY + "\n")
                 infile.write("lottery: " + str(lottery) + CURRENCY + "\n")
                 infile.write("bonus: " + str(bonus) + CURRENCY)
+            self.file.write("Winnings\n")
+            self.file.write(self.id + "\t" + reward + "\t" + charity + "\t" + donation + "\n\n")
         
 
     def write(self):

@@ -122,7 +122,7 @@ debriefscale4 = "completely agree"
 debriefdimensions = ["... required attention",
                      "... required logical thinking",
                      "... enabled cheating",
-                     "... made immoral behavior acceptable"]
+                     "... made overreporting correct predictions acceptable"]
 
 
 
@@ -135,7 +135,7 @@ class Cheating(ExperimentFrame):
 
         #######################
         # adjustable parameters
-        self.trials = 1
+        self.trials = 10
         self.pause_after_roll = 0.5
         self.pause_before_trial = 0.2
         self.displayNum = self.createDots # self.createDots or self.createText
@@ -458,6 +458,8 @@ class CheatingInstructions(InstructionsFrame):
     def __init__(self, root):
         super().__init__(root, text = intro_block_1, height = 19, font = 16)
 
+        self.predictionVar = StringVar()
+        self.rewardVar = StringVar()
         self.checkVar = StringVar()
         self.vcmd = (self.register(self.onValidate), '%P')
         self.checkFrame = Canvas(self, background = "white", highlightbackground = "white",
@@ -536,7 +538,8 @@ class CheatingInstructions(InstructionsFrame):
                 self.bottomMistakes.delete("1.0", "end")
                 self.bottomMistakes.insert("1.0", wrong_money, "centered")
                 self.bottomMistakes["state"] = "disabled"
-                return                
+                return
+            self.write()
             super().nextFun()
         else:
             answer = int(self.checkVar.get())
@@ -552,8 +555,6 @@ class CheatingInstructions(InstructionsFrame):
             self.bottomText["state"] = "normal"
             self.bottomText.insert("1.0", second_check_question)
             self.bottomText["state"] = "disabled"
-            self.predictionVar = StringVar()
-            self.rewardVar = StringVar()
             self.vcmd2 = (self.register(self.onValidate), '%P', "predictions")
             self.vcmd3 = (self.register(self.onValidate), '%P', "reward")
             self.predictionsEntry = ttk.Entry(self.bottomAnswers, textvariable = self.predictionVar, width = 10,
@@ -566,6 +567,11 @@ class CheatingInstructions(InstructionsFrame):
             self.rewardLab["foreground"] = "black"
             self.predictionsEntry.grid(row = 0, column = 0, padx = 6)
             self.rewardEntry.grid(row = 1, column = 0, padx = 6)
+
+    def write(self):
+        self.file.write("Cheating prediction\n")
+        self.file.write(self.id + "\t" + self.predictionVar.get() + "\t" + self.rewardVar.get() + "\n\n")
+        
 
 
         
