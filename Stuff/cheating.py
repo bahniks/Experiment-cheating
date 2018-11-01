@@ -507,7 +507,7 @@ class CheatingInstructions(InstructionsFrame):
         
     def onValidate(self, P):
         try:
-            if int(P) > 0:
+            if int(P) >= 0:
                 self.next["state"] = "!disabled"
             else:
                 self.next["state"] = "disabled"
