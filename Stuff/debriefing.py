@@ -25,6 +25,8 @@ q3 = "In your opinion, what was the aim of the task where you had to predict whe
 q4 = "In your opinion, what was the aim of the task, where you had the option to donate money to a charity? Please state, why you chose in this task the way you did."
 q5 = "Do you think it would be immoral to overreport the number of correctly predicted die rolls if given the chance in the dice rolling task in order to earn more money from the experimenter? Please also provide the reason for your answer."
 
+czech = "You can answer these questions in Czech if you prefer so."
+
 ##################################################################################################################
 
 
@@ -34,6 +36,15 @@ class Debriefing(ExperimentFrame):
         super().__init__(root)
 
         self.file.write("Debriefing\n")
+
+        self.label = Text(self, wrap = "word", font = "helvetica 13",
+                          relief = "flat", height = 1, cursor = "arrow",
+                          selectbackground = "white", selectforeground = "black")
+        self.label.insert("1.0", czech, "center")
+        self.label.tag_config("center", justify = "center")
+        self.label.config(state = "disabled")
+        self.label.grid(column = 1, row = 0)
+
 
         self.question1 = Question(self, q1, alines = 4)
         self.question2 = Question(self, q2, alines = 4, qlines = 3)
@@ -57,7 +68,7 @@ class Debriefing(ExperimentFrame):
 
         self.columnconfigure(0, weight = 1)
         self.columnconfigure(2, weight = 1)
-        self.rowconfigure(0, weight = 2)
+        self.rowconfigure(0, weight = 3)
         self.rowconfigure(1, weight = 1)
         self.rowconfigure(2, weight = 1)
         self.rowconfigure(3, weight = 1)

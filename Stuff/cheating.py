@@ -24,7 +24,7 @@ predictiontext = "I made a prediction."
 
 treatmenttext = '''Trial {}
 
-You have to decide whether an odd or even number will be rolled on a die in this trial. Now, please remember your prediction and then click on the button to roll the die.
+You have to decide whether an odd or even number will be rolled on a die in this trial. Now, please make your prediction, remember it, and then click on the button to roll the die.
 
 Press "{}".
 '''.format("{}", rolltext)
@@ -33,7 +33,7 @@ treatmenttext2 = "Select whether you predicted correctly and earned {} {} or whe
 
 controltext = """Trial {}
 
-You have to decide whether an odd or even number will be rolled on a die in this trial. Now, select your prediction and then click on the button to roll the die.
+You have to decide whether an odd or an even number will be rolled on a die in this trial. Now, select your prediction and then click on the button to roll the die.
 """
 
 controltext2 = "In this trial, your prediction was {}"
@@ -81,16 +81,15 @@ For every trial with a correct prediction, you earn {} {}.
 After completing all three sets, one set will be chosen at random. You will only receive money earned in the chosen set. Therefore, if you make correct predictions in all 10 trials of a set that is later chosen, you will receive {} {}. The number of correct predictions in the two remaining sets does not affect the amount of money that you will receive in any way.
 
 To check whether you understand the conditions correctly, please answer the following question:
-When you make 3 correct predictions out of 10 in the first set, 5 correct predictions out of 10 in the second set, and 7 correct predictions out of 10 in the third set, and then the third set is chosen, how much money will you receive?
+When you make 7 correct predictions out of 10 in the first set, 5 correct predictions out of 10 in the second set, and 2 correct predictions out of 10 in the third set, and then the third set is chosen, how much money will you receive?
 """.format(WIN, CURRENCY, WIN*10, CURRENCY)
 
-wrong_answer = "{} {} is a wrong answer, the correct answer is {} {}. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN*7, CURRENCY, WIN, WIN*7, CURRENCY)
-correct_answer = "{} {} is a correct answer. The third set was chosen and you correctly predicted 7 rolls in the third set. Therefore, you get 7×{} = {} {}.".format("{}", CURRENCY, WIN, WIN*7, CURRENCY)
+wrong_answer = "{} {} is a wrong answer, the correct answer is {} {}. The third set was chosen and you correctly predicted 2 rolls in the third set. Therefore, you get 2×{} = {} {}.".format("{}", CURRENCY, WIN*7, CURRENCY, WIN, WIN*2, CURRENCY)
+correct_answer = "{} {} is the correct answer. The third set was chosen and you correctly predicted 2 rolls in the third set. Therefore, you get 2×{} = {} {}.".format("{}", CURRENCY, WIN, WIN*2, CURRENCY)
 
-second_check_question = "Before you begin, write down how many correct predictions you believe you will make and how much money you will earn in the chosen set for which you will earn money."
+second_check_question = "Before you begin, write down how many correct predictions you believe you will make in the chosen set for which you will earn money."
 prediction_label = "correct predictions"
 wrong_trials = "There are only 10 trials in one set!"
-wrong_money = "You earn {} {} for each correct prediction!".format(WIN, CURRENCY)
 
 intro_block_2 = """
 This is the end of the first set of 10 trials. If this set is chosen, you will receive {} {}. Now, the second block of 10 trials begins.
@@ -122,8 +121,8 @@ debriefscale4 = "completely agree"
 debriefdimensions = ["... required attention",
                      "... required logical thinking",
                      "... enabled cheating",
-                     "... made overreporting correct predictions acceptable"]
-
+                     "... made overreporting correct predictions acceptable",
+                     "... the die roll was randomly generated"]
 
 
 
@@ -458,10 +457,9 @@ class OneFrame(Canvas):
 
 class CheatingInstructions(InstructionsFrame):
     def __init__(self, root):
-        super().__init__(root, text = intro_block_1, height = 19, font = 16)
+        super().__init__(root, text = intro_block_1, height = 18, font = 16)
 
         self.predictionVar = StringVar()
-        self.rewardVar = StringVar()
         self.checkVar = StringVar()
         self.vcmd = (self.register(self.onValidate), '%P')
         self.checkFrame = Canvas(self, background = "white", highlightbackground = "white",
@@ -488,10 +486,7 @@ class CheatingInstructions(InstructionsFrame):
         self.bottomAnswers.grid(row = 5, column = 1)
         self.predictionsLab = ttk.Label(self.bottomAnswers, text = prediction_label, font = "helvetica 16",
                                         background = "white", foreground = "white")
-        self.predictionsLab.grid(row = 0, column = 1, sticky = NSEW)
-        self.rewardLab = ttk.Label(self.bottomAnswers, text = CURRENCY, font = "helvetica 16",
-                                   background = "white", foreground = "white")
-        self.rewardLab.grid(row = 1, column = 1, sticky = NSEW, pady = 8)
+        self.predictionsLab.grid(row = 0, column = 1, sticky = NSEW, pady = 12)
         self.bottomMistakes = Text(self, font = "helvetica 16", relief = "flat", background = "white",
                                    width = 90, height = 1, wrap = "word", highlightbackground = "white",
                                    state = "disabled", foreground = "red")
@@ -510,23 +505,16 @@ class CheatingInstructions(InstructionsFrame):
 
         self.checked = False
         
-
-    def onValidate(self, P, entry = None):
+    def onValidate(self, P):
         try:
             if int(P) > 0:
-                if self.checked:
-                    if (entry == "predictions" and int(self.rewardVar.get()) > 0) or \
-                       (entry == "reward" and int(self.predictionVar.get()) > 0):
-                        self.next["state"] = "!disabled"                        
-                else:
-                    self.next["state"] = "!disabled"
+                self.next["state"] = "!disabled"
             else:
                 self.next["state"] = "disabled"
         except Exception as e:
             self.next["state"] = "disabled"
         return True
     
-
     def nextFun(self):
         if self.checked:
             if int(self.predictionVar.get()) > 10:
@@ -535,17 +523,11 @@ class CheatingInstructions(InstructionsFrame):
                 self.bottomMistakes.insert("1.0", wrong_trials, "centered")
                 self.bottomMistakes["state"] = "disabled"
                 return
-            elif int(self.predictionVar.get())*WIN != int(self.rewardVar.get()):
-                self.bottomMistakes["state"] = "normal"
-                self.bottomMistakes.delete("1.0", "end")
-                self.bottomMistakes.insert("1.0", wrong_money, "centered")
-                self.bottomMistakes["state"] = "disabled"
-                return
             self.write()
             super().nextFun()
         else:
             answer = int(self.checkVar.get())
-            if answer == WIN*7:
+            if answer == WIN*2:
                 text = correct_answer.format(answer)
             else:
                 text = wrong_answer.format(answer)
@@ -557,22 +539,16 @@ class CheatingInstructions(InstructionsFrame):
             self.bottomText["state"] = "normal"
             self.bottomText.insert("1.0", second_check_question)
             self.bottomText["state"] = "disabled"
-            self.vcmd2 = (self.register(self.onValidate), '%P', "predictions")
-            self.vcmd3 = (self.register(self.onValidate), '%P', "reward")
+            self.vcmd2 = (self.register(self.onValidate), '%P')
             self.predictionsEntry = ttk.Entry(self.bottomAnswers, textvariable = self.predictionVar, width = 10,
                                               justify = "right", font = "helvetica 16", validate = "key",
                                               validatecommand = self.vcmd2)
-            self.rewardEntry = ttk.Entry(self.bottomAnswers, textvariable = self.rewardVar, width = 10,
-                                         justify = "right", font = "helvetica 16", validate = "key",
-                                         validatecommand = self.vcmd3)
             self.predictionsLab["foreground"] = "black"
-            self.rewardLab["foreground"] = "black"
             self.predictionsEntry.grid(row = 0, column = 0, padx = 6)
-            self.rewardEntry.grid(row = 1, column = 0, padx = 6)
 
     def write(self):
         self.file.write("Cheating prediction\n")
-        self.file.write(self.id + "\t" + self.predictionVar.get() + "\t" + self.rewardVar.get() + "\n\n")
+        self.file.write(self.id + "\t" + self.predictionVar.get() + "\n\n")
         
 
         
@@ -604,12 +580,12 @@ EndCheating = (InstructionsFrame, {"text": endtext, "height": 5, "update": ["win
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([#Instructions1,
-         #BlockOne,
-         #Instructions2,
-         #BlockTwo,
-         #Instructions3,
-         #BlockThree,
-         #EndCheating,
+    GUI([Instructions1,
+         BlockOne,
+         Instructions2,
+         BlockTwo,
+         Instructions3,
+         BlockThree,
+         EndCheating,
          DebriefCheating
          ])

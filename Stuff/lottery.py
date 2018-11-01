@@ -23,7 +23,7 @@ optionsCzechia = ((42, 44, 46, 48, 50),
                   (100, 100, 100, 100, 100))
 
 instructions = """
-In the following task, you will have to make 5 separate decisions between two alternatives each. First alternative always represents a sure payoff, second alternative represents a lottery. The payoff probabilities vary across the decisions such as that the riskier alternative (i.e. lottery) will become increasingly attractive with each row. 
+In the following task, you will have to make 5 separate decisions between two alternatives each. First alternative always represents a sure payoff, second alternative represents a lottery. The % number represents the probability that you win and your payoff will then be {} {}. If you do not win, your payoff will be 0 {}. The payoff probabilities vary across the decisions so that the riskier alternative (i.e. lottery) is increasingly attractive with each row. 
 
 After you have completed this task, your payoff will be determined. For this, one of your decisions will be selected at random (with equal probabilities) and you will get a certain payoff or the corresponding lottery will be played (based on whether you have chosen a sure payoff or a lottery). Thus, although you will have made five choices, only one eventually determines your payoff.
 
@@ -46,24 +46,29 @@ risky = "Because you have chosen a lottery, the draw has taken place and you win
 class Lottery(ExperimentFrame):
     def __init__(self, root):
         super().__init__(root)
-           
-        self.text = Text(self, font = "helvetica 15", relief = "flat", background = "white", height = 12,
-                         wrap = "word", highlightbackground = "white", width = 90)
-        self.text.grid(row = 1, column = 0, columnspan = 4)
-        self.text.insert("1.0", instructions)
-        self.text.config(state = "disabled")
 
         if COUNTRY == "CHINA":
             options = optionsChina
         elif COUNTRY == "CZECHIA":
             options = optionsCzechia
         self.options = options
+           
+        self.text = Text(self, font = "helvetica 15", relief = "flat", background = "white", height = 14,
+                         wrap = "word", highlightbackground = "white", width = 90)
+        self.text.grid(row = 1, column = 0, columnspan = 4)
+        self.text.insert("1.0", instructions.format(options[2][0], CURRENCY, CURRENCY))
+        self.text.config(state = "disabled")
+
+        self.leftLabel = ttk.Label(self, text = "Sure payoff", font = "helvetica 15", background = "white")
+        self.leftLabel.grid(row = 3, column = 1, pady = 10)
+        self.rightLabel = ttk.Label(self, text = "Lottery", font = "helvetica 15", background = "white")
+        self.rightLabel.grid(row = 3, column = 2, pady = 10)
 
         self.variables = OrderedDict()
         self.rbuttonsL = {}
         self.rbuttonsR = {}
         for i in range(5):
-            row = i + 3
+            row = i + 4
             self.variables[i] = StringVar()
             self.rbuttonsL[i] = ttk.Radiobutton(self, text = " {} {}".format(options[0][i], CURRENCY),
                                                 variable = self.variables[i], value = str(i+1) + "sure",

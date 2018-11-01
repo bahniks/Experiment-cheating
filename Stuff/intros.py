@@ -16,9 +16,9 @@ Welcome to the research study conducted in cooperation with the Faculty of Busin
 2) Lottery task: You will choose a lottery. You can earn money depending on the outcome of the chosen lottery.
 3) Distribution of money: You will learn how much you have earned in the previous parts and you can decide what to do with your earnings.
 4) Questionnaires: You will answer questions about your characteristics and attitudes. There will be items checking whether you pay attention to the questions. If you answer these attention checks correctly, you can earn additional money.
-5) End of the study and payment: After you are finished, you can go to the next room where you sign a contract based on which you will receive your earned money into your bank account. Because only the overall sum will be in the contract, nobody will know how much money did you earn in different parts of the study or how did you decide to distribute it.  
+5) End of the study and payment: After you are finished, you can go to the next room where you sign a contract based on which you will receive your earned money into your bank account. Because only the overall sum will be in the contract, nobody will know how much money you earned in different parts of the study or how you decided to distribute it.  
 
-Thank you for turning off your mobile phones completely and please do not communicate with others in any way during the study. In case you are communicating with other participants or disturbing the study in any other way, you will be asked to leave the laboratory without payment.
+Thank you for turning off your mobile phones completely and please do not communicate with others in any way during the study. In case you communicate with other participants or disturb the study in any other way, you will be asked to leave the laboratory without payment.
 
 In case you have any questions or you encounter any technical difficulties during the task, just raise your hand and silently wait for a research assistant.
 
@@ -66,6 +66,7 @@ Experimental Economics Lab
            BONUS, CURRENCY, # attention check
            "{}", CURRENCY, # celkem
            "{}") # seat
+
 
 
 

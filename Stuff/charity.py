@@ -31,12 +31,13 @@ Now, you have an opportunity to give some of the earned money to a charity of yo
 
 Use the slider below to enter the amount you want to donate to one of the four charities listed below. In case you decide to donate some money, you can choose the charity by clicking the corresponding button.
 
-It is completely up to you how much of your earned money you donate – you can donate any amount between 0 and the full earned amount. The donated amount will be deducted from your final payment for the study.
+It is completely up to you how much of your earned money you donate – you can donate any amount between 0 {} and the full earned amount. The donated amount will be deducted from your final payment for the study. The rest, that is the amount that you decide to keep, you will receive at the end of the study.
 
 Our research team will send all the money collected to the chosen charities after the end of the data collection.
 """
 
 donationtext = "Your donation is {} {}"
+
 
 
 ################################################################################
@@ -58,9 +59,9 @@ class Charity(ExperimentFrame):
         self.money.set(0)
 
         self.text = Text(self, font = "helvetica 15", relief = "flat", background = "white", height = 15,
-                         wrap = "word", highlightbackground = "white", width = 90)
+                         wrap = "word", highlightbackground = "white", width = 88)
         self.text.grid(row = 1, column = 0, columnspan = 4)
-        self.text.insert("1.0", instructions.format(selected, win, CURRENCY))
+        self.text.insert("1.0", instructions.format(selected, win, CURRENCY, CURRENCY))
         self.text.config(state = "disabled")
 
         ttk.Style().configure("TScale", background = "white")

@@ -14,11 +14,13 @@ from constants import BONUS, CURRENCY
 ################################################################################
 # TEXTS
 questintro = """
-In the following part of the study, you will answer several series of questions about yourself, your attitudes, and opinions. This part should take about XX minutes. 
+In the following part of the study, you will answer several series of questions about yourself, your attitudes, and opinions. This part should take about 40 minutes. 
 
 In order to check whether you pay attention to the questions, there are several attention checks mixed among the regular questions. You can earn an additional {} {} if you answer all of these checks correctly. 
 
-Therefore, make sure to carefully read each question.
+Therefore, make sure to carefully read each question. However, try not to think too long about the questions – the first answer that comes into your mind is usually the best.
+
+In case you do not understand all words in a question, try to answer to the best of your ability. Please do not ask research assistants for a clarification.
 """.format(BONUS, CURRENCY)
 
 hexacoinstructions = """On the following pages you will find a series of statements about you.
@@ -213,7 +215,7 @@ class Work(Quest):
                          height = 1, options = 7, center = True)
 
 
-QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 9})
+QuestInstructions = (InstructionsFrame, {"text": questintro, "height": 13})
 
 
 if __name__ == "__main__":
