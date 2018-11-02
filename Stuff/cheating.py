@@ -84,7 +84,7 @@ To check whether you understand the conditions correctly, please answer the foll
 When you make 7 correct predictions out of 10 in the first set, 5 correct predictions out of 10 in the second set, and 2 correct predictions out of 10 in the third set, and then the third set is chosen, how much money will you receive?
 """.format(WIN, CURRENCY, WIN*10, CURRENCY)
 
-wrong_answer = "{} {} is a wrong answer, the correct answer is {} {}. The third set was chosen and you correctly predicted 2 rolls in the third set. Therefore, you get 2×{} = {} {}.".format("{}", CURRENCY, WIN*7, CURRENCY, WIN, WIN*2, CURRENCY)
+wrong_answer = "{} {} is a wrong answer, the correct answer is {} {}. The third set was chosen and you correctly predicted 2 rolls in the third set. Therefore, you get 2×{} = {} {}.".format("{}", CURRENCY, WIN*2, CURRENCY, WIN, WIN*2, CURRENCY)
 correct_answer = "{} {} is the correct answer. The third set was chosen and you correctly predicted 2 rolls in the third set. Therefore, you get 2×{} = {} {}.".format("{}", CURRENCY, WIN, WIN*2, CURRENCY)
 
 second_check_question = "Before you begin, write down how many correct predictions you believe you will make in the chosen set for which you will earn money."
@@ -247,6 +247,8 @@ class Cheating(ExperimentFrame):
 
     def checked(self):
         self.rollButton["state"] = "!disabled"
+        self.oddButton["state"] = "disabled"
+        self.evenButton["state"] = "disabled"
 
     def checkbuttoned(self):
         self.rollButton["state"] = "!disabled"
