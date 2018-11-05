@@ -151,7 +151,8 @@ class Values(Questionnaire):
         patterns = [("He ", "She "),
                     (" him", " her"),
                     (" he ", " she "),
-                    (" his ", " her ")]
+                    (" his ", " her "),
+                    ("His ", "Her ")]
         
         if "gender" in root.texts and root.texts["gender"] == "female":
             for i in range(len(words)):
