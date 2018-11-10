@@ -46,7 +46,7 @@ class GUI(Tk):
         self.columnconfigure(0, weight = 1)
         self.rowconfigure(0, weight = 1)
                       
-        with open(self.outputfile, mode = "w") as self.file:
+        with open(self.outputfile, mode = "w", encoding = "utf-8") as self.file:
             self.nextFrame()
             self.mainloop()
         
@@ -72,7 +72,7 @@ class GUI(Tk):
     def closeFun(self, event = ""):
         self.frame.write()
         message = "Are you sure that you want to end the study prematurely? "
-        ans = True
+        #ans = True
         ans = messagebox.askyesno(message = message, icon = "question", parent = self,
                                   title = "End study?")
         if ans:
