@@ -53,7 +53,7 @@ In the dice rolling task, you earned {} {}. From this amount, you decided to don
 
 The results of the experiment will be freely accessible on the CEBEX website (cebex.org) soon after the data evaluation and publication of the findings. We kindly ask you not to mention the details of this research to other potential participants, so that their answers and choices are unaffected.
 
-Please raise your hand and one of the research assistants will come and terminate the experiment. You may then collect your belongings, the paper with your seat number and the reward, and, without disturbing other participants, go to the room XXX where you will receive your reward.
+Please raise your hand and one of the research assistants will come and terminate the experiment. You may then collect your belongings, the paper with your seat number and the reward, and, without disturbing other participants, go to the front desk where you will receive your reward.
 
 This is the end of the experiment. Thank you for your participation!
 
@@ -61,12 +61,11 @@ Experimental Economics Lab
 """.format("{}", CURRENCY, # cheating
            "{}", CURRENCY, # charity
            "{}", CURRENCY, # lottery
-           "{}", # not /  ... atention check
+           "{}", # not /  ... attention check
            "{}", # earned / did not earn ... attention check
            BONUS, CURRENCY, # attention check
            "{}", CURRENCY, # celkem
            "{}") # seat
-
 
 
 
