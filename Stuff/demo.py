@@ -21,6 +21,12 @@ english_level = ["No knowledge of English",
                  "High intermediate level of English (FCE level)",
                  "Advanced level of English (CAE level)",
                  "Proficient in English (CPE level)"]
+english_china = ["No knowledge of English",
+                 "Elementary level of English (IELTS below 4.5)",
+                 "Low intermediate level of English (IELTS 4.0-4.5)",
+                 "High intermediate level of English (IELTS 5.0-6.5)",
+                 "Advanced level of English (IELTS 7.0-8.0)",
+                 "Proficient in English (IELTS 8.5-9.0)"]
 education_levels = ["None",
                     "Primary school",
                     "Middle school",
@@ -131,7 +137,10 @@ class Demographics(ExperimentFrame):
 
         self.languageCB = ttk.Combobox(self, textvariable = self.language, width = 35,
                                        font = "helvetica 14", state = "readonly")
-        self.languageCB["values"] = english_level
+        if COUNTRY == "CHINA":
+            self.languageCB["values"] = english_china
+        else:
+            self.languageCB["values"] = english_level
         self.languageCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled()) 
 
         self.educationCB = ttk.Combobox(self, textvariable = self.education, width = 30,
