@@ -5,6 +5,7 @@ from time import localtime, strftime
 
 import os
 import random
+from constants import COUNTRY
 
 
 class GUI(Tk):
@@ -33,7 +34,10 @@ class GUI(Tk):
             return
         
         writeTime = strftime("%y_%m_%d_%H%M%S", localtime())
-        self.outputfile = os.path.join(filepath, writeTime + "_" + str(random.randint(100, 999)) + ".txt")
+        if COUNTRY == "CHINA":
+            self.outputfile = os.path.join(filepath, writeTime + "_" + str(random.randint(100, 999)) + "_CHINA" + ".txt")
+        else:
+            self.outputfile = os.path.join(filepath, writeTime + "_" + str(random.randint(100, 999)) + ".txt")
 
         self.bind("<Escape>", self.closeFun)
 
